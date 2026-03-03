@@ -9,11 +9,12 @@ import {
   CurrencyEuroIcon,
   TruckIcon,
   EyeIcon,
-  XCircleIcon
+  XCircleIcon,
+  BanknotesIcon // ← AJOUTE CETTE ICÔNE
 } from '@heroicons/react/24/outline'
 
 export const Orders = () => {
-  const { orders, loading, cancelOrder, getOrderById } = useOrders()
+  const { orders, loading, cancelOrder } = useOrders() // ← retire getOrderById si non utilisé
   const [selectedOrder, setSelectedOrder] = useState(null)
 
   const getStatusColor = (status) => {
@@ -130,11 +131,13 @@ export const Orders = () => {
                     <h4 className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">
                       Paiement
                     </h4>
-                    <p className="text-sm">
-                      Mode: {order.payment_method === 'cash_on_delivery' ? 'À la livraison' : 
-                             order.payment_method === 'mobile_money' ? 'Mobile Money' : 'Carte bancaire'}<br />
-                      Statut: {order.payment_status === 'paid' ? 'Payé' : 'En attente'}
-                    </p>
+                    <div className="flex items-center space-x-2 text-sm">
+                      <BanknotesIcon className="h-5 w-5 text-green-600" />
+                      <span>
+                        Paiement à la livraison •{' '}
+                        {order.payment_status === 'paid' ? 'Payé' : 'À payer à la réception'}
+                      </span>
+                    </div>
                   </div>
                 </div>
 

@@ -15,36 +15,46 @@ const supabaseAdmin = serviceRoleKey
     })
   : null
 
-// Log pour debug
 console.log('🔑 Service Role Key présente:', !!serviceRoleKey)
 
 export const usersApi = {
   // Récupérer tous les utilisateurs avec leurs rôles
   async getAll() {
     try {
-      // Vérifier que le client admin est disponible
-      if (!supabaseAdmin) {
-        throw new Error('Clé service_role manquante dans .env')
-      }
-
-      // 1. Récupérer tous les utilisateurs via le client admin
-      const { data: authUsers, error: authError } = await supabaseAdmin.auth.admin.listUsers()
+      let usersData = []
       
-      if (authError) {
-        console.error('❌ Erreur admin.listUsers:', authError)
-        throw authError
+      // 1. Récupérer les utilisateurs (avec admin si disponible)
+      if (supabaseAdmin) {
+        const { data: authUsers, error: authError } = await supabaseAdmin.auth.admin.listUsers()
+        if (authError) throw authError
+        usersData = authUsers.users
+      } else {
+        // Fallback: récupérer depuis profiles (moins complet)
+        const { data: profiles, error } = await supabase
+          .from('profiles')
+          .select('*, user_roles(role)')
+        
+        if (error) throw error
+        return profiles.map(profile => ({
+          id: profile.id,
+          email: profile.email,
+          created_at: profile.created_at,
+          user_metadata: {
+            firstName: profile.first_name || '',
+            lastName: profile.last_name || ''
+          },
+          role: profile.user_roles?.role || 'user'
+        }))
       }
 
-      console.log('📊 Utilisateurs récupérés:', authUsers.users.length)
-
-      // 2. Récupérer tous les rôles depuis user_roles
+      // 2. Récupérer les rôles
       const { data: roles, error: rolesError } = await supabase
         .from('user_roles')
         .select('*')
 
       if (rolesError) throw rolesError
 
-      // 3. Récupérer tous les profils
+      // 3. Récupérer les profils
       const { data: profiles, error: profilesError } = await supabase
         .from('profiles')
         .select('*')
@@ -52,7 +62,7 @@ export const usersApi = {
       if (profilesError && profilesError.code !== 'PGRST116') throw profilesError
 
       // 4. Combiner les données
-      const usersWithDetails = authUsers.users.map(user => {
+      const usersWithDetails = usersData.map(user => {
         const userRole = roles?.find(r => r.user_id === user.id)
         const userProfile = profiles?.find(p => p.id === user.id)
 
@@ -79,12 +89,32 @@ export const usersApi = {
   // Récupérer un utilisateur par son ID
   async getById(id) {
     try {
-      if (!supabaseAdmin) {
-        throw new Error('Clé service_role manquante dans .env')
+      let userData
+      
+      if (supabaseAdmin) {
+        const { data: user, error } = await supabaseAdmin.auth.admin.getUserById(id)
+        if (error) throw error
+        userData = user.user
+      } else {
+        const { data, error } = await supabase
+          .from('profiles')
+          .select('*, user_roles(role)')
+          .eq('id', id)
+          .single()
+        
+        if (error) throw error
+        return {
+          id: data.id,
+          email: data.email,
+          created_at: data.created_at,
+          user_metadata: {
+            firstName: data.first_name || '',
+            lastName: data.last_name || ''
+          },
+          role: data.user_roles?.role || 'user',
+          profile: data
+        }
       }
-
-      const { data: user, error: userError } = await supabaseAdmin.auth.admin.getUserById(id)
-      if (userError) throw userError
 
       const { data: role } = await supabase
         .from('user_roles')
@@ -99,7 +129,7 @@ export const usersApi = {
         .maybeSingle()
 
       return {
-        ...user.user,
+        ...userData,
         role: role?.role || 'user',
         profile: profile || {}
       }
@@ -132,10 +162,6 @@ export const usersApi = {
   // Supprimer un utilisateur
   async delete(userId) {
     try {
-      if (!supabaseAdmin) {
-        throw new Error('Clé service_role manquante dans .env')
-      }
-
       // 1. Supprimer le profil
       await supabase
         .from('profiles')
@@ -148,9 +174,11 @@ export const usersApi = {
         .delete()
         .eq('user_id', userId)
 
-      // 3. Supprimer l'utilisateur de auth.users (via admin)
-      const { error } = await supabaseAdmin.auth.admin.deleteUser(userId)
-      if (error) throw error
+      // 3. Supprimer l'utilisateur (si admin disponible)
+      if (supabaseAdmin) {
+        const { error } = await supabaseAdmin.auth.admin.deleteUser(userId)
+        if (error) throw error
+      }
       
       return true
     } catch (error) {

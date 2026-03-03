@@ -34,6 +34,7 @@ import { Unauthorized } from './pages/Unauthorized'
 // Pages protégées (utilisateur connecté)
 import { Profile } from './pages/Profile'
 import { Orders } from './pages/Orders'
+import { OrderSuccess } from './pages/OrderSuccess'
 import { Favorites } from './pages/Favorites'
 import { Checkout } from './pages/Checkout'
 
@@ -124,7 +125,11 @@ function App() {
                           <Orders />
                         </ProtectedRoute>
                       } />
-                      
+                      <Route path="/orders/success/:id" element={
+                        <ProtectedRoute>
+                          <OrderSuccess />
+                        </ProtectedRoute>
+                      } />
                       <Route path="/favorites" element={
                         <ProtectedRoute>
                           <Favorites />
