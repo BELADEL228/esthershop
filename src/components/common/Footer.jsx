@@ -75,11 +75,8 @@ export const Footer = () => {
     { name: 'Apple Pay', icon: SiApplepay, color: 'text-gray-400' },
     { name: 'Google Pay', icon: SiGooglepay, color: 'text-blue-500' }
   ]
-
-  return (
+return (
     <footer className="bg-gray-900 text-white">
-      {user ? (
-        <>
       {/* Newsletter Section */}
       <div className="border-b border-gray-800">
         <div className="container mx-auto px-4 py-12">
@@ -102,27 +99,7 @@ export const Footer = () => {
             </div>
           </div>
         </div>
-      </div>
-      </>
-      ) : (
-    <>
-                        <Link
-                          to="/login"
-                          className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
-                          onClick={() => setIsUserMenuOpen(false)}
-                        >
-                          Connexion
-                        </Link>
-                        <Link
-                          to="/register"
-                          className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
-                          onClick={() => setIsUserMenuOpen(false)}
-                        >
-                          Inscription
-                        </Link>
-                      </>
-
-      )}
+      </div> 
 
       {/* Main Footer */}
       <div className="container mx-auto px-4 py-12">
