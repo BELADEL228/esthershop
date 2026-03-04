@@ -233,7 +233,7 @@ export const Checkout = () => {
                 )}
               </div>
               <div className="flex justify-between">
-                <span>TVA (18%)</span>
+                <span>TVA (5%)</span>
                 <span>{formatPrice(tax)}</span>
               </div>
               <div className="flex justify-between font-bold text-lg pt-2 border-t">

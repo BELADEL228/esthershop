@@ -15,10 +15,10 @@ const categories = [
     slug: 'vetements'
   },
   {
-    name: 'Maison',
+    name: 'Parfum',
     image: 'https://images.unsplash.com/photo-1484101403633-562f891dc89a?w=600',
     count: 180,
-    slug: 'maison'
+    slug: 'parfum'
   },
   {
     name: 'Sport',

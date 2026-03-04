@@ -9,9 +9,9 @@ import {
 
 export const About = () => {
   const stats = [
-    { label: 'Produits', value: '10,000+' },
-    { label: 'Clients', value: '50,000+' },
-    { label: 'Commandes', value: '100,000+' },
+    { label: 'Produits', value: '100+' },
+    { label: 'Clients', value: '5000+' },
+    { label: 'Commandes', value: '1,000+' },
     { label: 'Années', value: '5' }
   ]
 
@@ -56,7 +56,7 @@ export const About = () => {
             Fondée en 2024, E-Shop est née d'une passion commune pour le shopping en ligne et le désir de rendre les achats plus accessibles à tous.
           </p>
           <p className="text-gray-600 dark:text-gray-400 mb-4">
-            Ce qui a commencé comme une petite boutique en ligne est devenu aujourd'hui une référence dans le e-commerce, avec des milliers de produits et des centaines de milliers de clients satisfaits.
+            Ce qui a commencé comme une petite boutique en ligne est devenu aujourd'hui une référence dans le e-commerce, avec des centaines de produits et des centaines de clients satisfaits.
           </p>
           <p className="text-gray-600 dark:text-gray-400">
             Notre mission : vous offrir la meilleure expérience shopping possible, avec des produits de qualité, des prix justes et un service client exceptionnel.
