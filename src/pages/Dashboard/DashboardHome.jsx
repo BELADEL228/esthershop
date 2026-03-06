@@ -3,15 +3,15 @@ import { ordersApi } from '../../services/api/orders'
 import { productsApi } from '../../services/api/products'
 import { usersApi } from '../../services/api/users'
 import { formatPrice } from '../../utils/helpers'
-import { RevenueChart } from '../../components/dashboard/RevenueChart'
-import { OrdersPieChart } from '../../components/dashboard/OrdersPieChart'
+import { RevenueChart } from './RevenueChart'
+import { OrdersPieChart } from './OrdersPieChart'
 import {
   CurrencyEuroIcon,
   ShoppingBagIcon,
   UsersIcon,
   ChartBarIcon,
-  TrendingUpIcon,
-  TrendingDownIcon
+  ArrowTrendingUpIcon,
+  ArrowTrendingDownIcon
 } from '@heroicons/react/24/outline'
 
 export const DashboardHome = () => {
