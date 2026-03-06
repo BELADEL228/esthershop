@@ -42,7 +42,7 @@ import { Checkout } from './pages/Checkout'
 // Pages dashboard (admin)
 import { DashboardLayout } from './pages/Dashboard/DashboardLayout'
 import { DashboardHome } from './pages/Dashboard/DashboardHome'
-import { NewsletterManagement } from './pages/Dashboard/NewsletterManagement'  // ← Corrigé (majuscule)
+import { NewsletterManagement } from './pages/Dashboard/newsletterManagement'  // ← Corrigé (majuscule)
 import { ProductsManagement } from './pages/Dashboard/ProductsManagement'
 import { MessagesManagement } from './pages/Dashboard/MessagesManagement'
 import { OrdersManagement } from './pages/Dashboard/OrdersManagement'
