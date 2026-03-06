@@ -137,12 +137,12 @@ export const DashboardHome = () => {
                   <div className="flex items-center mt-2 text-sm">
                     {card.evolution > 0 ? (
                       <>
-                        <TrendingUpIcon className="h-4 w-4 text-green-500 mr-1" />
+                        <ArrowTrendingUpIcon className="h-4 w-4 text-green-500 mr-1" />
                         <span className="text-green-600">+{card.evolution}%</span>
                       </>
                     ) : card.evolution < 0 ? (
                       <>
-                        <TrendingDownIcon className="h-4 w-4 text-red-500 mr-1" />
+                        <ArrowTrendingDownIcon className="h-4 w-4 text-red-500 mr-1" />
                         <span className="text-red-600">{card.evolution}%</span>
                       </>
                     ) : null}
