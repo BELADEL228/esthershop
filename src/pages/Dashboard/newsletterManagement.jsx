@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { newsletterApi } from '../../services/api/newsletter'
-import { sendBulkNewsletter, createNewsletterTemplate } from '../../services/email/newsletter'
+// CORRECTION : L'import doit utiliser fetch pour appeler l'API backend
 import { supabase } from '../../services/supabase'
 import { 
   EnvelopeIcon, 
@@ -43,7 +43,6 @@ export const NewsletterManagement = () => {
 
   const loadStats = async () => {
     try {
-      // Récupérer les stats depuis Supabase
       const { data, error } = await supabase
         .from('newsletter_stats')
         .select('total_sent')
@@ -70,7 +69,6 @@ export const NewsletterManagement = () => {
       return
     }
 
-    // Confirmation
     if (!window.confirm(`Envoyer cette newsletter à ${activeSubscribers.length} abonné(s) ?`)) {
       return
     }
@@ -79,27 +77,32 @@ export const NewsletterManagement = () => {
     setSendResults(null)
     
     try {
-      // Créer le template HTML
-      const htmlContent = createNewsletterTemplate(subject, `
-        <h2 style="color: #2563eb; margin-bottom: 20px;">${subject}</h2>
-        <div style="font-size: 16px; line-height: 1.6;">
-          ${content.split('\n').map(paragraph => 
-            `<p style="margin-bottom: 15px;">${paragraph}</p>`
-          ).join('')}
-        </div>
-      `)
+      // 1. Créer le template HTML
+      const htmlContent = createNewsletterTemplate(subject, content)
 
-      // Envoyer les emails
-      const results = await sendBulkNewsletter(
-        activeSubscribers,
-        subject,
-        htmlContent
-      )
+      // 2. Envoyer via l'API backend
+      const response = await fetch('/api/send-newsletter', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          subscribers: activeSubscribers.map(s => s.email),
+          subject,
+          htmlContent
+        })
+      })
+
+      const results = await response.json()
+
+      if (!response.ok) {
+        throw new Error(results.error || 'Erreur lors de l\'envoi')
+      }
 
       setSendResults(results)
 
-      // Mettre à jour les statistiques si au moins un email a été envoyé
-      if (results.success.length > 0) {
+      // 3. Mettre à jour les statistiques
+      if (results.success?.length > 0) {
         const newTotal = (stats.sent || 0) + 1
         
         const { error } = await supabase
@@ -118,11 +121,10 @@ export const NewsletterManagement = () => {
         toast.success(
           `✅ Newsletter envoyée !\n` +
           `Succès: ${results.success.length}\n` +
-          `Échecs: ${results.failed.length}`
+          `Échecs: ${results.failed?.length || 0}`
         )
         
-        // Réinitialiser le formulaire seulement si tout s'est bien passé
-        if (results.failed.length === 0) {
+        if (results.failed?.length === 0) {
           setSubject('')
           setContent('')
         }
@@ -152,7 +154,6 @@ export const NewsletterManagement = () => {
     try {
       const emails = await newsletterApi.exportEmails()
       
-      // Créer le CSV
       const headers = 'Email,Date d\'inscription,Source,Statut\n'
       const rows = emails.map(e => 
         `"${e.email}",${new Date(e.subscribed_at).toLocaleDateString()},${e.source || 'footer'},${e.is_active ? 'Actif' : 'Inactif'}`
@@ -171,6 +172,47 @@ export const NewsletterManagement = () => {
     } catch (error) {
       toast.error('Erreur lors de l\'export')
     }
+  }
+
+  const createNewsletterTemplate = (subject, content) => {
+    return `
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <meta charset="utf-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>${subject}</title>
+          <style>
+            body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+            .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+            .header { background: linear-gradient(135deg, #2563eb, #1e40af); color: white; padding: 30px 20px; text-align: center; }
+            .content { padding: 30px; background: #f9fafb; }
+            .footer { text-align: center; padding: 20px; font-size: 12px; color: #666; }
+            .button { display: inline-block; padding: 12px 30px; background: #2563eb; color: white; text-decoration: none; border-radius: 6px; }
+          </style>
+        </head>
+        <body>
+          <div class="container">
+            <div class="header">
+              <h1>✨ Esther Shop ✨</h1>
+            </div>
+            <div class="content">
+              <h2 style="color: #2563eb;">${subject}</h2>
+              <div>${content.replace(/\n/g, '<br>')}</div>
+              <div style="text-align: center; margin-top: 30px;">
+                <a href="https://esthershop-9si1.vercel.app/" class="button">
+                  Découvrir nos produits
+                </a>
+              </div>
+            </div>
+            <div class="footer">
+              <p>© ${new Date().getFullYear()} Esther Shop. Tous droits réservés.</p>
+              <p>Lomé, Togo</p>
+            </div>
+          </div>
+        </body>
+      </html>
+    `
   }
 
   if (loading) {
@@ -301,15 +343,15 @@ export const NewsletterManagement = () => {
             <div className="grid grid-cols-2 gap-4">
               <div className="flex items-center space-x-2 text-green-600">
                 <CheckCircleIcon className="h-5 w-5" />
-                <span>Réussis : {sendResults.success.length}</span>
+                <span>Réussis : {sendResults.success?.length || 0}</span>
               </div>
               <div className="flex items-center space-x-2 text-red-600">
                 <XCircleIcon className="h-5 w-5" />
-                <span>Échecs : {sendResults.failed.length}</span>
+                <span>Échecs : {sendResults.failed?.length || 0}</span>
               </div>
             </div>
             
-            {sendResults.failed.length > 0 && (
+            {sendResults.failed?.length > 0 && (
               <div className="mt-2 text-sm text-red-600">
                 <p>Échecs :</p>
                 <ul className="list-disc list-inside">

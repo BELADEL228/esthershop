@@ -7,7 +7,8 @@ import {
   CheckCircleIcon
 } from '@heroicons/react/24/outline'
 import { supabase } from '../services/supabase'
-import { sendContactMessage } from '../services/email/contact'
+// CORRECTION : L'import doit être relatif au dossier api à la racine
+// ou utiliser fetch directement (recommandé)
 import toast from 'react-hot-toast'
 
 export const Contact = () => {
@@ -46,17 +47,27 @@ export const Contact = () => {
 
       if (dbError) throw dbError
 
-      // 2. Envoyer l'email de notification (optionnel)
-      try {
-        await sendContactMessage(
-          formData.name,
-          formData.email,
-          formData.subject,
-          formData.message
-        )
-      } catch (emailError) {
-        console.error('Erreur envoi email:', emailError)
+      // 2. Envoyer l'email via l'API route (CORRIGÉ)
+      const response = await fetch('/api/send-contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          subject: formData.subject,
+          message: formData.message
+        })
+      })
+
+      const result = await response.json()
+
+      if (!response.ok) {
+        console.error('Erreur envoi email:', result.error)
         // Ne pas bloquer l'utilisateur si l'email échoue
+      } else {
+        console.log('✅ Email envoyé:', result)
       }
 
       // Succès
@@ -68,7 +79,7 @@ export const Contact = () => {
       setTimeout(() => setSuccess(false), 5000)
       
     } catch (error) {
-      console.error('Erreur:', error)
+      console.error('❌ Erreur:', error)
       toast.error("Erreur lors de l'envoi du message")
     } finally {
       setLoading(false)
