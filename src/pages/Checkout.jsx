@@ -5,6 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useCart } from '../contexts/CartContext'
 import { useAuth } from '../hooks/useAuth'
+import { useSettings } from '../hooks/useSettings'  // ← AJOUTÉ
 import { ordersApi } from '../services/api/orders'
 import { formatPrice } from '../utils/helpers'
 import { 
@@ -28,6 +29,7 @@ export const Checkout = () => {
   const navigate = useNavigate()
   const { cart, clearCart } = useCart()
   const { user } = useAuth()
+  const { settings } = useSettings()  // ← Récupère les paramètres
   const [loading, setLoading] = useState(false)
 
   const { register, handleSubmit, formState: { errors } } = useForm({
@@ -39,11 +41,25 @@ export const Checkout = () => {
 
   const calculateTotals = () => {
     const subtotal = cart.total
-    const shipping = subtotal > 50000 ? 0 : 2000 // 2000 FCFA si < 50000
-    const tax = subtotal * 0.18 // TVA 18%
+    
+    // Utiliser les valeurs des settings ou des valeurs par défaut
+    const shippingCost = settings?.shipping_cost || 2000
+    const freeShippingThreshold = settings?.free_shipping_threshold || 50000
+    const taxRate = settings?.tax_rate || 18
+    
+    const shipping = subtotal > freeShippingThreshold ? 0 : shippingCost
+    const tax = Math.round(subtotal * taxRate / 100) // TVA en pourcentage
     const total = subtotal + shipping + tax
     
-    return { subtotal, shipping, tax, total }
+    return { 
+      subtotal, 
+      shipping, 
+      tax, 
+      total,
+      taxRate,
+      freeShippingThreshold,
+      shippingCost
+    }
   }
 
   const handleSubmitOrder = async (data) => {
@@ -92,7 +108,15 @@ export const Checkout = () => {
     }
   }
 
-  const { subtotal, shipping, tax, total } = calculateTotals()
+  const { 
+    subtotal, 
+    shipping, 
+    tax, 
+    total,
+    taxRate,
+    freeShippingThreshold,
+    shippingCost 
+  } = calculateTotals()
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -233,7 +257,7 @@ export const Checkout = () => {
                 )}
               </div>
               <div className="flex justify-between">
-                <span>TVA (5%)</span>
+                <span>TVA ({taxRate}%)</span>
                 <span>{formatPrice(tax)}</span>
               </div>
               <div className="flex justify-between font-bold text-lg pt-2 border-t">
@@ -241,6 +265,14 @@ export const Checkout = () => {
                 <span className="text-blue-600">{formatPrice(total)}</span>
               </div>
             </div>
+
+            {subtotal < freeShippingThreshold && (
+              <div className="mt-4 p-3 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg text-sm">
+                <p className="text-yellow-800 dark:text-yellow-200">
+                  💡 Plus que {formatPrice(freeShippingThreshold - subtotal)} d'achat pour la livraison gratuite !
+                </p>
+              </div>
+            )}
           </div>
         </div>
       </div>

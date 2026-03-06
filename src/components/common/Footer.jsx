@@ -1,5 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import { useSettings } from '../../hooks/useSettings'  // ← AJOUTÉ
 import { 
   EnvelopeIcon,
   PhoneIcon,
@@ -8,20 +9,17 @@ import {
 } from '@heroicons/react/24/outline'
 import { 
   FaFacebook, 
-  FaTwitter, 
   FaInstagram, 
-  FaYoutube,
+  FaTiktok,
   FaCcVisa,
   FaCcMastercard,
   FaPaypal,
-  FaApple,
-  FaGooglePay,
-  FaTiktok
 } from 'react-icons/fa'
 import { SiApplepay, SiGooglepay } from 'react-icons/si'
 
 export const Footer = () => {
   const currentYear = new Date().getFullYear()
+  const { settings } = useSettings()  // ← Récupère les paramètres
 
   const quickLinks = [
     { name: 'Accueil', path: '/' },
@@ -51,19 +49,19 @@ export const Footer = () => {
     { 
       name: 'Facebook', 
       icon: FaFacebook, 
-      href: 'https://facebook.com', 
+      href: 'https://facebook.com/esthershop', 
       color: 'hover:text-blue-600' 
     },
     { 
       name: 'TikTok', 
       icon: FaTiktok, 
-      href: 'https://tiktok.com', 
+      href: 'https://tiktok.com/@esthershop', 
       color: 'hover:text-black' 
     },
     { 
       name: 'Instagram', 
       icon: FaInstagram, 
-      href: 'https://instagram.com', 
+      href: 'https://instagram.com/esthershop', 
       color: 'hover:text-pink-600' 
     },
   ]
@@ -75,28 +73,33 @@ export const Footer = () => {
     { name: 'Apple Pay', icon: SiApplepay, color: 'text-gray-400' },
     { name: 'Google Pay', icon: SiGooglepay, color: 'text-blue-500' }
   ]
-return (
+
+  return (
     <footer className="bg-gray-900 text-white">
       {/* Newsletter Section */}
       <div className="border-b border-gray-800">
         <div className="container mx-auto px-4 py-12">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
             <div>
-              <h3 className="text-2xl font-bold mb-2">Inscription au Newsletter</h3>
+              <h3 className="text-2xl font-bold mb-2">Inscription à la Newsletter</h3>
               <p className="text-gray-400">
                 Inscrivez-vous à notre newsletter pour recevoir nos offres spéciales et les dernières nouveautés
               </p>
             </div>
-            <div className="flex flex-col sm:flex-row gap-4">
+            <form className="flex flex-col sm:flex-row gap-4">
               <input
                 type="email"
                 placeholder="Votre adresse email"
                 className="flex-1 px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-white"
+                required
               />
-              <button className="px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-colors whitespace-nowrap">
-                S'inscrire au Newsletter
+              <button 
+                type="submit"
+                className="px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-colors whitespace-nowrap"
+              >
+                S'inscrire
               </button>
-            </div>
+            </form>
           </div>
         </div>
       </div> 
@@ -107,14 +110,15 @@ return (
           {/* About */}
           <div>
             <div className="flex items-center space-x-2 mb-6">
-              <div className="w-20 h-6 bg-blue-600 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-xl mr-1">Esther'</span>
+              <div className="bg-blue-600 rounded-lg flex items-center justify-center px-3 py-1">
+                <span className="text-white font-bold text-xl">
+                  {settings?.site_name?.split(' ')[0] || "Esther'"}
+                </span>
               </div>
               <span className="text-xl font-bold">Shop</span>
             </div>
             <p className="text-gray-400 mb-6">
-              Votre destination shopping préférée pour les dernières tendances et les meilleurs prix. 
-              Des milliers de produits disponibles avec livraison rapide partout au Togo.
+              {settings?.site_description || "Votre destination shopping préférée pour les dernières tendances et les meilleurs prix. Des milliers de produits disponibles avec livraison rapide partout au Togo."}
             </p>
             <div className="flex space-x-4">
               {socialLinks.map((social) => (
@@ -175,21 +179,25 @@ return (
               <li className="flex items-start space-x-3">
                 <MapPinIcon className="h-5 w-5 text-gray-400 flex-shrink-0 mt-0.5" />
                 <span className="text-gray-400">
-                  Adeticope<br />
-                  Marché d'adeticope, Lomé<br />
-                  National N1
+                  {settings?.site_address || "Adeticope, Marché d'Adéticopé, National N1, Lomé, Togo"}
                 </span>
               </li>
               <li className="flex items-center space-x-3">
                 <PhoneIcon className="h-5 w-5 text-gray-400 flex-shrink-0" />
-                <a href="wa:+22896644990" className="text-gray-400 hover:text-white transition-colors">
-                  +228 96 64 49 90
+                <a 
+                  href={`tel:${settings?.site_phone?.replace(/\s/g, '') || '+22896644990'}`} 
+                  className="text-gray-400 hover:text-white transition-colors"
+                >
+                  {settings?.site_phone || '+228 96 64 49 90'}
                 </a>
               </li>
               <li className="flex items-center space-x-3">
                 <EnvelopeIcon className="h-5 w-5 text-gray-400 flex-shrink-0" />
-                <a href="mailto:esthernabede08@gmail.com" className="text-gray-400 hover:text-white transition-colors">
-                  esthernabede08@gmail.com
+                <a 
+                  href={`mailto:${settings?.site_email || 'esthernabede08@gmail.com'}`} 
+                  className="text-gray-400 hover:text-white transition-colors"
+                >
+                  {settings?.site_email || 'esthernabede08@gmail.com'}
                 </a>
               </li>
               <li className="flex items-start space-x-3">
@@ -243,7 +251,7 @@ return (
         <div className="border-t border-gray-800 mt-8 pt-8 text-center">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-gray-400">
             <div className="order-3 md:order-1">
-              &copy; {currentYear} E-Shop. Tous droits réservés.
+              &copy; {currentYear} {settings?.site_name || 'Esther Shop'}. Tous droits réservés.
             </div>
             <div className="order-1 md:order-2 flex justify-center space-x-6">
               {infoLinks.slice(0, 3).map((link) => (

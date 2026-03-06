@@ -3,6 +3,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../../hooks/useAuth'
 import { useCart } from '../../hooks/useCart'
 import { useTheme } from '../../hooks/useTheme'
+import { useSettings } from '../../hooks/useSettings'  // ← AJOUTÉ
 import { 
   ShoppingCartIcon, 
   UserIcon, 
@@ -12,9 +13,11 @@ import {
   HeartIcon,
   SunIcon,
   MoonIcon,
-  ChevronDownIcon
+  ChevronDownIcon,
+  InformationCircleIcon,  // ← AJOUTÉ pour À propos
+  EnvelopeIcon             // ← AJOUTÉ pour Contact
 } from '@heroicons/react/24/outline'
-import { motion, AnimatePresence } from 'framer-motion' //eslint-disable-line
+import { motion, AnimatePresence } from 'framer-motion'
 
 export const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -25,6 +28,7 @@ export const Header = () => {
   const { user, isAdmin, signOut } = useAuth()
   const { cart } = useCart()
   const { darkMode, toggleDarkMode } = useTheme()
+  const { settings } = useSettings()  // ← AJOUTÉ pour récupérer le nom du site
   const navigate = useNavigate()
   const location = useLocation()
   const searchInputRef = useRef(null)
@@ -39,20 +43,17 @@ export const Header = () => {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  // Fermer les menus au changement de route - Version corrigée sans erreur ESLint
+  // Fermer les menus au changement de route
   useEffect(() => {
-    // Utiliser une fonction pour éviter les dépendances circulaires
     const closeMenus = () => {
       setIsMenuOpen(false)
       setIsUserMenuOpen(false)
       setIsSearchOpen(false)
     }
     
-    // Utiliser requestAnimationFrame au lieu de setTimeout pour de meilleures performances
     const frame = requestAnimationFrame(closeMenus)
-    
     return () => cancelAnimationFrame(frame)
-  }, [location.pathname]) // Dépendre uniquement du pathname, pas de l'objet location entier
+  }, [location.pathname])
 
   // Focus sur la recherche quand elle s'ouvre
   useEffect(() => {
@@ -97,13 +98,15 @@ export const Header = () => {
     }`}>
       <nav className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16 md:h-20">
-          {/* Logo */}
+          {/* Logo avec nom dynamique depuis les settings */}
           <Link 
             to="/" 
             className="flex items-center space-x-2 group"
           >
-            <div className="w-20 h-6 bg-blue-600 rounded-lg flex items-center justify-center transform group-hover:rotate-12 transition-transform">
-              <span className="text-white font-bold text-xl mr-1">Esther'</span>
+            <div className="bg-blue-600 rounded-lg flex items-center justify-center px-3 py-1 transform group-hover:rotate-12 transition-transform">
+              <span className="text-white font-bold text-xl">
+                {settings?.site_name?.split(' ')[0] || "Esther'"}
+              </span>
             </div>
             <span className="text-xl font-bold text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
               Shop
@@ -111,7 +114,7 @@ export const Header = () => {
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
+          <div className="hidden md:flex items-center space-x-6 lg:space-x-8">
             <Link 
               to="/" 
               className={`text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors relative group ${
@@ -133,6 +136,32 @@ export const Header = () => {
               Produits
               <span className={`absolute bottom-0 left-0 w-full h-0.5 bg-blue-600 transform scale-x-0 group-hover:scale-x-100 transition-transform ${
                 location.pathname.includes('/products') ? 'scale-x-100' : ''
+              }`} />
+            </Link>
+
+            <Link 
+              to="/about" 
+              className={`text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors relative group flex items-center space-x-1 ${
+                location.pathname === '/about' ? 'text-blue-600 dark:text-blue-400' : ''
+              }`}
+            >
+              <InformationCircleIcon className="h-4 w-4" />
+              <span>À propos</span>
+              <span className={`absolute bottom-0 left-0 w-full h-0.5 bg-blue-600 transform scale-x-0 group-hover:scale-x-100 transition-transform ${
+                location.pathname === '/about' ? 'scale-x-100' : ''
+              }`} />
+            </Link>
+
+            <Link 
+              to="/contact" 
+              className={`text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors relative group flex items-center space-x-1 ${
+                location.pathname === '/contact' ? 'text-blue-600 dark:text-blue-400' : ''
+              }`}
+            >
+              <EnvelopeIcon className="h-4 w-4" />
+              <span>Contact</span>
+              <span className={`absolute bottom-0 left-0 w-full h-0.5 bg-blue-600 transform scale-x-0 group-hover:scale-x-100 transition-transform ${
+                location.pathname === '/contact' ? 'scale-x-100' : ''
               }`} />
             </Link>
             
@@ -226,7 +255,7 @@ export const Header = () => {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
                     transition={{ duration: 0.2 }}
-                    className="absolute right-0 mt-2 w-64 bg-white dark:bg-gray-800 rounded-lg shadow-xl py-2 border dark:border-gray-700"
+                    className="absolute right-0 mt-2 w-64 bg-white dark:bg-gray-800 rounded-lg shadow-xl py-2 border dark:border-gray-700 z-50"
                   >
                     {user ? (
                       <>
@@ -392,6 +421,26 @@ export const Header = () => {
                     onClick={() => setIsMenuOpen(false)}
                   >
                     Produits
+                  </Link>
+
+                  <Link
+                    to="/about"
+                    className={`px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors ${
+                      location.pathname === '/about' ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400' : ''
+                    }`}
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    À propos
+                  </Link>
+
+                  <Link
+                    to="/contact"
+                    className={`px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors ${
+                      location.pathname === '/contact' ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400' : ''
+                    }`}
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    Contact
                   </Link>
                   
                   {isAdmin && (

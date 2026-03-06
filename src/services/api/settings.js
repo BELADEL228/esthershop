@@ -1,4 +1,3 @@
-// Service API pour les settings (à créer : src/services/api/settings.js)
 import { supabase } from '../supabase'
 
 export const settingsApi = {
@@ -8,7 +7,7 @@ export const settingsApi = {
       .from('settings')
       .select('*')
       .eq('id', 1)
-      .single()
+      .maybeSingle()
     
     if (error) throw error
     return data
@@ -19,13 +18,14 @@ export const settingsApi = {
     const { data, error } = await supabase
       .from('settings')
       .update({
-        site_name: settingsData.siteName,
-        site_email: settingsData.siteEmail,
-        site_phone: settingsData.sitePhone,
-        site_address: settingsData.siteAddress,
-        shipping_cost: settingsData.shippingCost,
-        free_shipping_threshold: settingsData.freeShippingThreshold,
-        tax_rate: settingsData.taxRate
+        site_name: settingsData.site_name,
+        site_email: settingsData.site_email,
+        site_phone: settingsData.site_phone,
+        site_address: settingsData.site_address,
+        shipping_cost: settingsData.shipping_cost,
+        free_shipping_threshold: settingsData.free_shipping_threshold,
+        tax_rate: settingsData.tax_rate,
+        updated_at: new Date().toISOString()
       })
       .eq('id', 1)
       .select()
