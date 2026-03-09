@@ -1,12 +1,17 @@
 import { supabase } from '../supabase'
 
 export const productsApi = {
-  // Récupérer tous les produits
-  async getAll(filters = {}) {
+  // Récupérer tous les produits (par défaut uniquement actifs)
+  async getAll(filters = {}, includeInactive = false) {
     let query = supabase
       .from('products')
       .select('*')
       .order('created_at', { ascending: false })
+
+    // Ne montrer que les actifs sauf si includeInactive est true (admin)
+    if (!includeInactive) {
+      query = query.eq('active', true)
+    }
 
     if (filters.category) {
       query = query.eq('category', filters.category)
@@ -29,7 +34,7 @@ export const productsApi = {
     return data
   },
 
-  // Récupérer un produit par ID
+  // Récupérer un produit par ID (quel que soit son statut actif)
   async getById(id) {
     const { data, error } = await supabase
       .from('products')
@@ -41,11 +46,11 @@ export const productsApi = {
     return data
   },
 
-  // Créer un produit (admin seulement)
+  // Créer un produit (actif par défaut)
   async create(productData) {
     const { data, error } = await supabase
       .from('products')
-      .insert([productData])
+      .insert([{ ...productData, active: true }])
       .select()
       .single()
     
@@ -53,7 +58,7 @@ export const productsApi = {
     return data
   },
 
-  // Mettre à jour un produit (admin seulement)
+  // Mettre à jour un produit
   async update(id, productData) {
     const { data, error } = await supabase
       .from('products')
@@ -66,25 +71,37 @@ export const productsApi = {
     return data
   },
 
-  // Supprimer un produit (admin seulement)
+  // Supprimer un produit (soft delete : passe active à false)
   async delete(id) {
     const { error } = await supabase
       .from('products')
-      .delete()
+      .update({ active: false })
       .eq('id', id)
     
     if (error) throw error
     return true
   },
 
-  // Récupérer les catégories uniques
+  // Récupérer les catégories uniques (uniquement parmi les produits actifs)
   async getCategories() {
     const { data, error } = await supabase
       .from('products')
       .select('category')
+      .eq('active', true)
       .order('category')
     
     if (error) throw error
     return [...new Set(data.map(item => item.category))]
+  },
+
+  // (Optionnel) Restaurer un produit supprimé
+  async restore(id) {
+    const { error } = await supabase
+      .from('products')
+      .update({ active: true })
+      .eq('id', id)
+    
+    if (error) throw error
+    return true
   }
 }

@@ -5,7 +5,7 @@ import { z } from 'zod'
 import { productsApi } from '../../services/api/products'
 import { uploadImage } from '../../services/storage/imageUpload'
 import { useAuth } from '../../hooks/useAuth'
-import { PencilIcon, TrashIcon, PlusIcon } from '@heroicons/react/24/outline'
+import { PencilIcon, TrashIcon, PlusIcon, ArrowPathIcon } from '@heroicons/react/24/outline'
 import toast from 'react-hot-toast'
 
 const productSchema = z.object({
@@ -25,16 +25,27 @@ export const ProductsManagement = () => {
   const { isAdmin } = useAuth()
 
   const { register, handleSubmit, reset, formState: { errors }, setValue } = useForm({
-    resolver: zodResolver(productSchema)
+    resolver: zodResolver(productSchema),
+    defaultValues: {
+      name: '',
+      description: '',
+      price: 0,
+      category: '',
+      stock: 0,
+      images: []
+    }
   })
 
   useEffect(() => {
     loadProducts()
   }, [])
 
+  // Charger tous les produits (y compris inactifs) pour l'admin
   const loadProducts = async () => {
     try {
-      const data = await productsApi.getAll()
+      setLoading(true)
+      // On passe un second paramètre true pour inclure les inactifs
+      const data = await productsApi.getAll({}, true)
       setProducts(data)
     } catch (error) {
       toast.error(`Erreur lors du chargement des produits: ${error.message}`)
@@ -45,8 +56,9 @@ export const ProductsManagement = () => {
 
   const handleImageUpload = async (event) => {
     const files = Array.from(event.target.files)
-    setUploading(true)
+    if (files.length === 0) return
 
+    setUploading(true)
     try {
       const uploadPromises = files.map(file => uploadImage(file))
       const uploadedImages = await Promise.all(uploadPromises)
@@ -86,18 +98,38 @@ export const ProductsManagement = () => {
 
   const handleEdit = (product) => {
     setEditingProduct(product)
-    reset(product)
+    // S'assurer que les nombres sont bien convertis pour le formulaire
+    reset({
+      ...product,
+      price: product.price,
+      stock: product.stock
+    })
   }
 
+  // Suppression (soft delete)
   const handleDelete = async (id) => {
-    if (!confirm('Êtes-vous sûr de vouloir supprimer ce produit ?')) return
+    if (!confirm('Êtes-vous sûr de vouloir désactiver ce produit ?')) return
 
     try {
       await productsApi.delete(id)
-      toast.success('Produit supprimé avec succès')
+      toast.success('Produit désactivé avec succès')
       loadProducts()
     } catch (error) {
-      toast.error(`Erreur lors de la suppression: ${error.message}`)
+      toast.error(`Erreur lors de la désactivation: ${error.message}`)
+    }
+  }
+
+  // Restauration (réactivation)
+  const handleRestore = async (id) => {
+    if (!confirm('Réactiver ce produit ?')) return
+
+    try {
+      // On suppose que l'API a une méthode restore, ou on peut utiliser update directement
+      await productsApi.update(id, { active: true })
+      toast.success('Produit réactivé avec succès')
+      loadProducts()
+    } catch (error) {
+      toast.error(`Erreur lors de la réactivation: ${error.message}`)
     }
   }
 
@@ -237,6 +269,13 @@ export const ProductsManagement = () => {
               className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md"
             />
             {uploading && <p className="text-blue-500 text-sm mt-1">Upload en cours...</p>}
+            {editingProduct?.images?.length > 0 && (
+              <div className="flex gap-2 mt-2">
+                {editingProduct.images.map((img, idx) => (
+                  <img key={idx} src={img} alt={`preview-${idx}`} className="h-16 w-16 object-cover rounded" />
+                ))}
+              </div>
+            )}
           </div>
 
           <div className="flex space-x-3">
@@ -283,13 +322,16 @@ export const ProductsManagement = () => {
                   Catégorie
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                  Statut
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                   Actions
                 </th>
               </tr>
             </thead>
             <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
               {products.map((product) => (
-                <tr key={product.id}>
+                <tr key={product.id} className={!product.active ? 'bg-gray-100 dark:bg-gray-700/50' : ''}>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center">
                       {product.images?.[0] && (
@@ -323,19 +365,43 @@ export const ProductsManagement = () => {
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400 capitalize">
                     {product.category}
                   </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    {!product.active && (
+                      <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-500 text-white">
+                        Désactivé
+                      </span>
+                    )}
+                    {product.active && (
+                      <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-500 text-white">
+                        Actif
+                      </span>
+                    )}
+                  </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                     <button
                       onClick={() => handleEdit(product)}
                       className="text-blue-600 hover:text-blue-900 dark:hover:text-blue-400 mr-3"
+                      title="Modifier"
                     >
                       <PencilIcon className="h-5 w-5" />
                     </button>
-                    <button
-                      onClick={() => handleDelete(product.id)}
-                      className="text-red-600 hover:text-red-900 dark:hover:text-red-400"
-                    >
-                      <TrashIcon className="h-5 w-5" />
-                    </button>
+                    {product.active ? (
+                      <button
+                        onClick={() => handleDelete(product.id)}
+                        className="text-red-600 hover:text-red-900 dark:hover:text-red-400 mr-3"
+                        title="Désactiver"
+                      >
+                        <TrashIcon className="h-5 w-5" />
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => handleRestore(product.id)}
+                        className="text-green-600 hover:text-green-900 dark:hover:text-green-400"
+                        title="Réactiver"
+                      >
+                        <ArrowPathIcon className="h-5 w-5" />
+                      </button>
+                    )}
                   </td>
                 </tr>
               ))}
