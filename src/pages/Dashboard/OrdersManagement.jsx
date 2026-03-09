@@ -251,9 +251,11 @@ export const OrdersManagement = () => {
                           <div className="md:col-span-3">
                             <h4 className="font-semibold mb-2">Articles</h4>
                             <div className="bg-white dark:bg-gray-800 rounded-lg border divide-y">
-                              {order.items?.map((item, index) => (
+                              {order.order_items?.map((item, index) => (
                                 <div key={index} className="flex justify-between p-3 text-sm">
-                                  <span>{item.name} x {item.quantity}</span>
+                                  <span>
+                                    {item.product?.name || "Produit inconnu"} x {item.quantity}
+                                  </span>
                                   <span className="font-medium">{formatPrice(item.price * item.quantity)}</span>
                                 </div>
                               ))}

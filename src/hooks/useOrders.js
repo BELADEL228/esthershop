@@ -17,9 +17,8 @@ export const useOrders = () => {
     revenue: 0
   })
   
-  const { user, isAdmin } = useAuth()  // ← isAdmin est IMPORTANT
+  const { user, isAdmin } = useAuth()
 
-  // Charger les commandes (utilisateur ou admin)
   const loadOrders = useCallback(async () => {
     if (!user) {
       setOrders([])
@@ -33,10 +32,8 @@ export const useOrders = () => {
       
       let data
       if (isAdmin) {
-        // Admin voit toutes les commandes
         data = await ordersApi.getAll()
       } else {
-        // Utilisateur voit ses commandes
         data = await ordersApi.getUserOrders(user.id)
       }
       
@@ -52,7 +49,6 @@ export const useOrders = () => {
     }
   }, [user, isAdmin])
 
-  // Calculer les statistiques
   const calculateStats = (ordersData) => {
     const newStats = {
       total: ordersData.length,
@@ -72,7 +68,6 @@ export const useOrders = () => {
     loadOrders()
   }, [loadOrders])
 
-  // Créer une commande
   const createOrder = async (orderData) => {
     try {
       const newOrder = await ordersApi.create({
@@ -91,7 +86,6 @@ export const useOrders = () => {
     }
   }
 
-  // Mettre à jour le statut d'une commande (admin)
   const updateOrderStatus = async (orderId, newStatus) => {
     if (!isAdmin) {
       toast.error('Action non autorisée')
@@ -101,12 +95,10 @@ export const useOrders = () => {
     try {
       const updated = await ordersApi.updateStatus(orderId, newStatus)
       
-      // Mettre à jour la liste locale
       setOrders(prev => prev.map(order => 
         order.id === orderId ? { ...order, status: newStatus } : order
       ))
       
-      // Recalculer les stats
       calculateStats(orders.map(order => 
         order.id === orderId ? { ...order, status: newStatus } : order
       ))
@@ -119,7 +111,6 @@ export const useOrders = () => {
     }
   }
 
-  // Annuler une commande
   const cancelOrder = async (orderId) => {
     const order = orders.find(o => o.id === orderId)
     
@@ -166,7 +157,6 @@ export const useOrders = () => {
     return orders.filter(order => order.status === status)
   }
 
-  // Stats pour l'utilisateur connecté (version simplifiée)
   const getUserStats = () => {
     return {
       total: orders.length,
@@ -180,23 +170,16 @@ export const useOrders = () => {
   }
 
   return {
-    // Données
     orders,
     loading,
     error,
-    
-    // Statistiques (globales pour admin, utilisateur pour client)
     stats: isAdmin ? stats : getUserStats(),
-    
-    // Actions
     createOrder,
-    updateOrderStatus,  // ← MAINtenant disponible !
+    updateOrderStatus,
     cancelOrder,
     getOrderById,
     refreshOrders,
     getOrdersByStatus,
-    
-    // Utilitaires
     isAdmin,
     user
   }

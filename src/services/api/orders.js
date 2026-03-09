@@ -1,13 +1,22 @@
 import { supabase } from '../supabase'
 
 export const ordersApi = {
-  // Récupérer toutes les commandes (admin)
+  // Récupérer toutes les commandes (admin) avec les détails des produits
   async getAll() {
     const { data, error } = await supabase
       .from('orders')
       .select(`
         *,
-        order_items (*)
+        order_items (
+          id,
+          quantity,
+          price,
+          product:product_id (
+            id,
+            name,
+            image_url
+          )
+        )
       `)
       .order('created_at', { ascending: false })
 
@@ -15,13 +24,22 @@ export const ordersApi = {
     return data
   },
 
-  // Récupérer les commandes d'un utilisateur
+  // Récupérer les commandes d'un utilisateur avec les détails des produits
   async getUserOrders(userId) {
     const { data, error } = await supabase
       .from('orders')
       .select(`
         *,
-        order_items (*)
+        order_items (
+          id,
+          quantity,
+          price,
+          product:product_id (
+            id,
+            name,
+            image_url
+          )
+        )
       `)
       .eq('user_id', userId)
       .order('created_at', { ascending: false })
@@ -30,13 +48,22 @@ export const ordersApi = {
     return data
   },
 
-  // Récupérer une commande par son ID
+  // Récupérer une commande par son ID avec les détails des produits
   async getById(orderId) {
     const { data, error } = await supabase
       .from('orders')
       .select(`
         *,
-        order_items (*)
+        order_items (
+          id,
+          quantity,
+          price,
+          product:product_id (
+            id,
+            name,
+            image_url
+          )
+        )
       `)
       .eq('id', orderId)
       .single()
@@ -58,7 +85,7 @@ export const ordersApi = {
           shipping: orderData.shipping || 0,
           tax: orderData.tax || 0,
           shipping_address: orderData.shipping_address,
-          payment_method: 'cash_on_delivery',
+          payment_method: orderData.payment_method || 'cash_on_delivery',
           payment_status: 'pending',
           status: 'pending',
           created_at: new Date().toISOString(),
@@ -75,8 +102,8 @@ export const ordersApi = {
           order_id: order.id,
           product_id: item.id,
           quantity: item.quantity,
-          price: item.price,
-          name: item.name
+          price: item.price
+          // Le nom n'est pas stocké ici car on utilisera la jointure avec products
         }))
 
         const { error: itemsError } = await supabase
@@ -149,7 +176,16 @@ export const ordersApi = {
       .from('orders')
       .select(`
         *,
-        order_items (*)
+        order_items (
+          id,
+          quantity,
+          price,
+          product:product_id (
+            id,
+            name,
+            image_url
+          )
+        )
       `)
       .order('created_at', { ascending: false })
       .limit(limit)
