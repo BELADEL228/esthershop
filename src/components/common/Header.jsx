@@ -91,19 +91,20 @@ export const Header = () => {
         ? 'bg-white/95 dark:bg-gray-900/95 backdrop-blur-md shadow-lg' 
         : 'bg-white dark:bg-gray-900 shadow-md'
     }`}>
-      <nav className="container mx-auto px-4">
+      <nav className="container mx-auto px-4 sm:px-6">
+        {/* Barre principale */}
         <div className="flex items-center justify-between h-16 md:h-20">
-          {/* Logo avec image */}
-          <Link to="/" className="flex items-center space-x-2 group">
+          {/* Logo - bien visible sur tous les écrans */}
+          <Link to="/" className="flex-shrink-0 group">
             <img 
               src="/logo.jpg" 
               alt={settings?.site_name || "Jenny Shop"} 
-              className="h-10 w-auto object-contain transition-transform group-hover:scale-105"
+              className="h-8 sm:h-10 md:h-12 w-auto object-contain transition-transform group-hover:scale-105"
             />
           </Link>
 
-          {/* Desktop Navigation - couleurs unies */}
-          <div className="hidden md:flex items-center space-x-6 lg:space-x-8">
+          {/* Navigation desktop - cachée sur tablette et mobile */}
+          <div className="hidden lg:flex items-center space-x-6 xl:space-x-8">
             <Link 
               to="/" 
               className={`text-gray-700 dark:text-gray-300 hover:text-primary-600 transition-colors relative group ${
@@ -169,43 +170,51 @@ export const Header = () => {
             )}
           </div>
 
-          {/* Right Icons */}
-          <div className="flex items-center space-x-2 md:space-x-4">
+          {/* Icônes de droite */}
+          <div className="flex items-center space-x-2 sm:space-x-3">
+            {/* Recherche (toujours visible) */}
             <button
               onClick={() => setIsSearchOpen(!isSearchOpen)}
-              className="hidden md:block p-2 text-gray-700 dark:text-gray-300 hover:text-primary-600 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors"
+              className="p-2 text-gray-700 dark:text-gray-300 hover:text-primary-600 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors"
+              aria-label="Rechercher"
             >
               <MagnifyingGlassIcon className="h-5 w-5" />
             </button>
 
+            {/* Thème (toujours visible) */}
             <button
               onClick={toggleDarkMode}
               className="p-2 text-gray-700 dark:text-gray-300 hover:text-primary-600 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors"
+              aria-label="Changer de thème"
             >
               {darkMode ? <SunIcon className="h-5 w-5" /> : <MoonIcon className="h-5 w-5" />}
             </button>
 
-            {/* Currency selector */}
+            {/* Sélecteur de devise (toujours visible) */}
             <select
               value={currency}
               onChange={(e) => setCurrency(e.target.value)}
-              className="p-2 text-gray-700 dark:text-gray-300 bg-transparent border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
+              className="text-sm px-2 py-1.5 sm:px-3 sm:py-2 text-gray-700 dark:text-gray-300 bg-transparent border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
             >
               <option value="XOF">FCFA</option>
               <option value="USD">USD ($)</option>
             </select>
 
+            {/* Favoris (caché sur très petit écran) */}
             <Link 
               to="/favorites" 
-              className="hidden md:block p-2 text-gray-700 dark:text-gray-300 hover:text-primary-600 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors relative"
+              className="hidden sm:block p-2 text-gray-700 dark:text-gray-300 hover:text-primary-600 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors relative"
+              aria-label="Favoris"
             >
               <HeartIcon className="h-5 w-5" />
               <span className="absolute -top-1 -right-1 bg-accent-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center shadow-sm">0</span>
             </Link>
 
+            {/* Panier (toujours visible) */}
             <Link 
               to="/cart" 
               className="p-2 text-gray-700 dark:text-gray-300 hover:text-primary-600 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors relative group"
+              aria-label="Panier"
             >
               <ShoppingCartIcon className="h-5 w-5" />
               {cartItemsCount > 0 && (
@@ -219,10 +228,12 @@ export const Header = () => {
               )}
             </Link>
 
+            {/* Menu utilisateur (toujours visible) */}
             <div className="relative" ref={userMenuRef}>
               <button
                 onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
                 className="flex items-center space-x-1 p-2 text-gray-700 dark:text-gray-300 hover:text-primary-600 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors"
+                aria-label="Menu utilisateur"
               >
                 <UserIcon className="h-5 w-5" />
                 <ChevronDownIcon className={`h-4 w-4 transition-transform ${isUserMenuOpen ? 'rotate-180' : ''}`} />
@@ -235,7 +246,7 @@ export const Header = () => {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
                     transition={{ duration: 0.2 }}
-                    className="absolute right-0 mt-2 w-64 bg-white dark:bg-gray-800 rounded-lg shadow-lg py-2 border dark:border-gray-700 z-50"
+                    className="absolute right-0 mt-2 w-56 sm:w-64 bg-white dark:bg-gray-800 rounded-lg shadow-lg py-2 border dark:border-gray-700 z-50"
                   >
                     {user ? (
                       <>
@@ -245,7 +256,7 @@ export const Header = () => {
                         </div>
                         <Link to="/profile" className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700" onClick={() => setIsUserMenuOpen(false)}>Mon Profil</Link>
                         <Link to="/orders" className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700" onClick={() => setIsUserMenuOpen(false)}>Mes Commandes</Link>
-                        <Link to="/favorites" className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 md:hidden" onClick={() => setIsUserMenuOpen(false)}>Mes Favoris</Link>
+                        <Link to="/favorites" className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 sm:hidden" onClick={() => setIsUserMenuOpen(false)}>Mes Favoris</Link>
                         {isAdmin && <Link to="/dashboard" className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700" onClick={() => setIsUserMenuOpen(false)}>Dashboard Admin</Link>}
                         <div className="border-t dark:border-gray-700 my-1" />
                         <button onClick={handleSignOut} className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20">Déconnexion</button>
@@ -261,25 +272,27 @@ export const Header = () => {
               </AnimatePresence>
             </div>
 
+            {/* Bouton menu mobile */}
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="md:hidden p-2 text-gray-700 dark:text-gray-300 hover:text-primary-600 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors"
+              className="lg:hidden p-2 text-gray-700 dark:text-gray-300 hover:text-primary-600 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors"
+              aria-label={isMenuOpen ? "Fermer le menu" : "Ouvrir le menu"}
             >
               {isMenuOpen ? <XMarkIcon className="h-6 w-6" /> : <Bars3Icon className="h-6 w-6" />}
             </button>
           </div>
         </div>
 
-        {/* Search Bar - Desktop */}
+        {/* Barre de recherche (visible sur desktop uniquement) */}
         <AnimatePresence>
           {isSearchOpen && (
             <motion.div
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
-              className="hidden md:block py-4"
+              className="hidden lg:block py-4 border-t border-gray-200 dark:border-gray-700"
             >
-              <form onSubmit={handleSearch} className="relative">
+              <form onSubmit={handleSearch} className="relative max-w-2xl mx-auto">
                 <input
                   ref={searchInputRef}
                   type="text"
@@ -297,16 +310,17 @@ export const Header = () => {
           )}
         </AnimatePresence>
 
-        {/* Mobile menu */}
+        {/* Menu mobile */}
         <AnimatePresence>
           {isMenuOpen && (
             <motion.div
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
-              className="md:hidden overflow-hidden"
+              className="lg:hidden overflow-hidden border-t border-gray-200 dark:border-gray-700 mt-2"
             >
               <div className="py-4 space-y-4">
+                {/* Barre de recherche sur mobile */}
                 <form onSubmit={handleSearch} className="relative">
                   <input
                     type="text"
@@ -318,7 +332,8 @@ export const Header = () => {
                   <MagnifyingGlassIcon className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
                 </form>
 
-                <div className="flex flex-col space-y-2">
+                {/* Liens de navigation */}
+                <div className="flex flex-col space-y-1">
                   <Link to="/" className={`px-4 py-2 rounded-lg transition-colors ${location.pathname === '/' ? 'bg-primary-600 text-white' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'}`} onClick={() => setIsMenuOpen(false)}>Accueil</Link>
                   <Link to="/products" className={`px-4 py-2 rounded-lg transition-colors ${location.pathname.includes('/products') ? 'bg-primary-600 text-white' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'}`} onClick={() => setIsMenuOpen(false)}>Produits</Link>
                   <Link to="/about" className={`px-4 py-2 rounded-lg transition-colors ${location.pathname === '/about' ? 'bg-primary-600 text-white' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'}`} onClick={() => setIsMenuOpen(false)}>À propos</Link>
