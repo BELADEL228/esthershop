@@ -135,7 +135,6 @@ export const Header = () => {
                 location.pathname === '/about' ? 'text-primary-600 font-semibold' : ''
               }`}
             >
-              <InformationCircleIcon className="h-4 w-4" />
               <span>À propos</span>
               <span className={`absolute bottom-0 left-0 w-full h-0.5 bg-primary-600 transform scale-x-0 group-hover:scale-x-100 transition-transform ${
                 location.pathname === '/about' ? 'scale-x-100' : ''
@@ -148,7 +147,6 @@ export const Header = () => {
                 location.pathname === '/contact' ? 'text-primary-600 font-semibold' : ''
               }`}
             >
-              <EnvelopeIcon className="h-4 w-4" />
               <span>Contact</span>
               <span className={`absolute bottom-0 left-0 w-full h-0.5 bg-primary-600 transform scale-x-0 group-hover:scale-x-100 transition-transform ${
                 location.pathname === '/contact' ? 'scale-x-100' : ''
@@ -196,7 +194,7 @@ export const Header = () => {
               onChange={(e) => setCurrency(e.target.value)}
               className="text-sm px-2 py-1.5 sm:px-3 sm:py-2 text-gray-700 dark:text-gray-300 bg-transparent border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
             >
-              <option value="XOF">FCFA</option>
+              <option value="XOF">XOF</option>
               <option value="USD">USD ($)</option>
             </select>
 
@@ -339,7 +337,6 @@ export const Header = () => {
                   onClick={() => setIsMenuOpen(false)}
                 >
                   <span className="flex items-center space-x-2">
-                    <ShoppingCartIcon className="h-5 w-5" />
                     <span>Mon panier</span>
                   </span>
                   {cartItemsCount > 0 && (
