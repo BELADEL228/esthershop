@@ -103,7 +103,7 @@ export const Header = () => {
             />
           </Link>
 
-          {/* Navigation desktop - cachée sur tablette et mobile */}
+          {/* Navigation desktop (visible sur grand écran) */}
           <div className="hidden lg:flex items-center space-x-6 xl:space-x-8">
             <Link 
               to="/" 
@@ -170,12 +170,12 @@ export const Header = () => {
             )}
           </div>
 
-          {/* Icônes de droite */}
+          {/* Icônes de droite (certaines cachées sur mobile) */}
           <div className="flex items-center space-x-2 sm:space-x-3">
-            {/* Recherche (toujours visible) */}
+            {/* Recherche (visible uniquement sur desktop) */}
             <button
               onClick={() => setIsSearchOpen(!isSearchOpen)}
-              className="p-2 text-gray-700 dark:text-gray-300 hover:text-primary-600 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors"
+              className="hidden lg:block p-2 text-gray-700 dark:text-gray-300 hover:text-primary-600 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors"
               aria-label="Rechercher"
             >
               <MagnifyingGlassIcon className="h-5 w-5" />
@@ -200,20 +200,10 @@ export const Header = () => {
               <option value="USD">USD ($)</option>
             </select>
 
-            {/* Favoris (caché sur très petit écran) */}
-            <Link 
-              to="/favorites" 
-              className="hidden sm:block p-2 text-gray-700 dark:text-gray-300 hover:text-primary-600 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors relative"
-              aria-label="Favoris"
-            >
-              <HeartIcon className="h-5 w-5" />
-              <span className="absolute -top-1 -right-1 bg-accent-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center shadow-sm">0</span>
-            </Link>
-
-            {/* Panier (toujours visible) */}
+            {/* Panier (visible uniquement sur desktop) */}
             <Link 
               to="/cart" 
-              className="p-2 text-gray-700 dark:text-gray-300 hover:text-primary-600 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors relative group"
+              className="hidden lg:block p-2 text-gray-700 dark:text-gray-300 hover:text-primary-600 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors relative group"
               aria-label="Panier"
             >
               <ShoppingCartIcon className="h-5 w-5" />
@@ -226,6 +216,16 @@ export const Header = () => {
                   {cartItemsCount}
                 </motion.span>
               )}
+            </Link>
+
+            {/* Favoris (visible sur desktop uniquement) */}
+            <Link 
+              to="/favorites" 
+              className="hidden lg:block p-2 text-gray-700 dark:text-gray-300 hover:text-primary-600 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors relative"
+              aria-label="Favoris"
+            >
+              <HeartIcon className="h-5 w-5" />
+              <span className="absolute -top-1 -right-1 bg-accent-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center shadow-sm">0</span>
             </Link>
 
             {/* Menu utilisateur (toujours visible) */}
@@ -256,7 +256,7 @@ export const Header = () => {
                         </div>
                         <Link to="/profile" className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700" onClick={() => setIsUserMenuOpen(false)}>Mon Profil</Link>
                         <Link to="/orders" className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700" onClick={() => setIsUserMenuOpen(false)}>Mes Commandes</Link>
-                        <Link to="/favorites" className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 sm:hidden" onClick={() => setIsUserMenuOpen(false)}>Mes Favoris</Link>
+                        <Link to="/favorites" className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 lg:hidden" onClick={() => setIsUserMenuOpen(false)}>Mes Favoris</Link>
                         {isAdmin && <Link to="/dashboard" className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700" onClick={() => setIsUserMenuOpen(false)}>Dashboard Admin</Link>}
                         <div className="border-t dark:border-gray-700 my-1" />
                         <button onClick={handleSignOut} className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20">Déconnexion</button>
@@ -272,7 +272,7 @@ export const Header = () => {
               </AnimatePresence>
             </div>
 
-            {/* Bouton menu mobile */}
+            {/* Bouton menu hamburger (visible sur tablette et mobile) */}
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               className="lg:hidden p-2 text-gray-700 dark:text-gray-300 hover:text-primary-600 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors"
@@ -283,7 +283,7 @@ export const Header = () => {
           </div>
         </div>
 
-        {/* Barre de recherche (visible sur desktop uniquement) */}
+        {/* Barre de recherche desktop (visible sur grand écran) */}
         <AnimatePresence>
           {isSearchOpen && (
             <motion.div
@@ -310,7 +310,7 @@ export const Header = () => {
           )}
         </AnimatePresence>
 
-        {/* Menu mobile */}
+        {/* Menu mobile (hamburger) - inclut recherche et panier */}
         <AnimatePresence>
           {isMenuOpen && (
             <motion.div
@@ -320,7 +320,7 @@ export const Header = () => {
               className="lg:hidden overflow-hidden border-t border-gray-200 dark:border-gray-700 mt-2"
             >
               <div className="py-4 space-y-4">
-                {/* Barre de recherche sur mobile */}
+                {/* Recherche mobile */}
                 <form onSubmit={handleSearch} className="relative">
                   <input
                     type="text"
@@ -331,6 +331,23 @@ export const Header = () => {
                   />
                   <MagnifyingGlassIcon className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
                 </form>
+
+                {/* Panier mobile avec badge */}
+                <Link
+                  to="/cart"
+                  className="flex items-center justify-between px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  <span className="flex items-center space-x-2">
+                    <ShoppingCartIcon className="h-5 w-5" />
+                    <span>Mon panier</span>
+                  </span>
+                  {cartItemsCount > 0 && (
+                    <span className="bg-accent-500 text-white text-xs rounded-full px-2 py-0.5">
+                      {cartItemsCount}
+                    </span>
+                  )}
+                </Link>
 
                 {/* Liens de navigation */}
                 <div className="flex flex-col space-y-1">
