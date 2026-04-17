@@ -27,8 +27,8 @@ export default async function handler(req, res) {
 
     // 4. Configurer l'email
     const mailOptions = {
-      from: `"Esther Shop" <${process.env.VITE_GMAIL_USER}>`,
-      to: ['esthernabede08@gmail.com', 'beleiabel8@gmail.com'],
+      from: `"Jenny Shop" <${process.env.VITE_GMAIL_USER}>`,
+      to: ['Jennynabede08@gmail.com', 'beleiabel8@gmail.com'],
       replyTo: email,
       subject: `[Contact] ${subject}`,
       html: `

@@ -14,7 +14,7 @@ export const ordersApi = {
           product:product_id (
             id,
             name,
-            image_url
+            images
           )
         )
       `)
@@ -37,7 +37,7 @@ export const ordersApi = {
           product:product_id (
             id,
             name,
-            image_url
+            images
           )
         )
       `)
@@ -61,7 +61,7 @@ export const ordersApi = {
           product:product_id (
             id,
             name,
-            image_url
+            images
           )
         )
       `)
@@ -183,7 +183,7 @@ export const ordersApi = {
           product:product_id (
             id,
             name,
-            image_url
+            images
           )
         )
       `)

@@ -37,7 +37,7 @@ export const UsersManagement = () => {
     try {
       await usersApi.updateRole(userId, newRole)
       toast.success('Rôle mis à jour avec succès')
-      await loadUsers() // Recharger la liste
+      await loadUsers()
     } catch (error) {
       toast.error(`Erreur lors de la mise à jour: ${error.message}`)
     }
@@ -49,7 +49,7 @@ export const UsersManagement = () => {
     try {
       await usersApi.delete(userId)
       toast.success('Utilisateur supprimé avec succès')
-      await loadUsers() // Recharger la liste
+      await loadUsers()
     } catch (error) {
       toast.error(`Erreur lors de la suppression: ${error.message}`)
     }
@@ -65,28 +65,28 @@ export const UsersManagement = () => {
       case 'admin':
         return 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400'
       default:
-        return 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400'
+        return 'bg-primary-100 text-primary-800 dark:bg-primary-900/30 dark:text-primary-400'
     }
   }
 
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
       </div>
     )
   }
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-8">Gestion des utilisateurs</h1>
+      <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-8">Gestion des utilisateurs</h1>
 
       {/* Statistiques */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 border border-gray-200 dark:border-gray-700">
           <div className="flex items-center space-x-4">
-            <div className="bg-blue-100 dark:bg-blue-900/20 p-3 rounded-lg">
-              <UserIcon className="h-6 w-6 text-blue-600 dark:text-blue-400" />
+            <div className="bg-primary-100 dark:bg-primary-900/20 p-3 rounded-lg">
+              <UserIcon className="h-6 w-6 text-primary-600 dark:text-primary-400" />
             </div>
             <div>
               <p className="text-sm text-gray-600 dark:text-gray-400">Total utilisateurs</p>
@@ -179,7 +179,7 @@ export const UsersManagement = () => {
                     <select
                       value={user.role || 'user'}
                       onChange={(e) => handleRoleChange(user.id, e.target.value)}
-                      className={`px-3 py-1 rounded-lg text-sm font-medium ${getRoleBadgeColor(user.role)} border-0 focus:ring-2 focus:ring-blue-500`}
+                      className={`px-3 py-1 rounded-lg text-sm font-medium ${getRoleBadgeColor(user.role)} border-0 focus:ring-2 focus:ring-primary-500`}
                     >
                       <option value="user">Utilisateur</option>
                       <option value="admin">Administrateur</option>
@@ -198,14 +198,14 @@ export const UsersManagement = () => {
                     <div className="flex items-center space-x-3">
                       <button
                         onClick={() => handleEditUser(user)}
-                        className="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300 transition-colors"
+                        className="text-primary-600 hover:text-primary-800 dark:text-primary-400 dark:hover:text-primary-300 transition-colors"
                         title="Modifier"
                       >
                         <PencilIcon className="h-5 w-5" />
                       </button>
                       <button
                         onClick={() => handleDeleteUser(user.id, user.email)}
-                        className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300 transition-colors"
+                        className="text-red-600 hover:text-red-700 dark:hover:text-red-400 transition-colors"
                         title="Supprimer"
                       >
                         <TrashIcon className="h-5 w-5" />
@@ -220,7 +220,7 @@ export const UsersManagement = () => {
 
         {users.length === 0 && (
           <div className="text-center py-12">
-            <UserIcon className="h-12 w-12 mx-auto text-gray-400 mb-4" />
+            <UserIcon className="h-12 w-12 mx-auto text-gray-400 dark:text-gray-500 mb-4" />
             <p className="text-gray-600 dark:text-gray-400">
               Aucun utilisateur trouvé
             </p>

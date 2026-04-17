@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { useSettings } from '../../hooks/useSettings'  // ← AJOUTÉ
+import { useSettings } from '../../hooks/useSettings'
 import { 
   EnvelopeIcon,
   PhoneIcon,
@@ -19,7 +19,7 @@ import { SiApplepay, SiGooglepay } from 'react-icons/si'
 
 export const Footer = () => {
   const currentYear = new Date().getFullYear()
-  const { settings } = useSettings()  // ← Récupère les paramètres
+  const { settings } = useSettings()
 
   const quickLinks = [
     { name: 'Accueil', path: '/' },
@@ -46,24 +46,9 @@ export const Footer = () => {
   ]
 
   const socialLinks = [
-    { 
-      name: 'Facebook', 
-      icon: FaFacebook, 
-      href: 'https://facebook.com/esthershop', 
-      color: 'hover:text-blue-600' 
-    },
-    { 
-      name: 'TikTok', 
-      icon: FaTiktok, 
-      href: 'https://tiktok.com/@esthershop', 
-      color: 'hover:text-black' 
-    },
-    { 
-      name: 'Instagram', 
-      icon: FaInstagram, 
-      href: 'https://instagram.com/esthershop', 
-      color: 'hover:text-pink-600' 
-    },
+    { name: 'Facebook', icon: FaFacebook, href: 'https://facebook.com/Jennyshop', color: 'hover:text-blue-600' },
+    { name: 'TikTok', icon: FaTiktok, href: 'https://tiktok.com/@Jennyshop', color: 'hover:text-black' },
+    { name: 'Instagram', icon: FaInstagram, href: 'https://instagram.com/Jennyshop', color: 'hover:text-pink-600' },
   ]
 
   const paymentMethods = [
@@ -83,19 +68,19 @@ export const Footer = () => {
             <div>
               <h3 className="text-2xl font-bold mb-2">Inscription à la Newsletter</h3>
               <p className="text-gray-400">
-                Inscrivez-vous à notre newsletter pour recevoir nos offres spéciales et les dernières nouveautés
+                Inscrivez-vous pour recevoir nos offres exclusives et les dernières nouveautés.
               </p>
             </div>
             <form className="flex flex-col sm:flex-row gap-4">
               <input
                 type="email"
                 placeholder="Votre adresse email"
-                className="flex-1 px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-white"
+                className="flex-1 px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-600 text-white placeholder-gray-400"
                 required
               />
               <button 
                 type="submit"
-                className="px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-colors whitespace-nowrap"
+                className="px-6 py-3 bg-primary-600 text-white rounded-lg font-semibold hover:bg-primary-700 transition-colors whitespace-nowrap"
               >
                 S'inscrire
               </button>
@@ -110,9 +95,9 @@ export const Footer = () => {
           {/* About */}
           <div>
             <div className="flex items-center space-x-2 mb-6">
-              <div className="bg-blue-600 rounded-lg flex items-center justify-center px-3 py-1">
+              <div className="bg-primary-600 rounded-lg flex items-center justify-center px-3 py-1">
                 <span className="text-white font-bold text-xl">
-                  {settings?.site_name?.split(' ')[0] || "Esther'"}
+                  {settings?.site_name?.split(' ')[0] || "Jenny'"}
                 </span>
               </div>
               <span className="text-xl font-bold">Shop</span>
@@ -138,7 +123,7 @@ export const Footer = () => {
 
           {/* Quick Links */}
           <div>
-            <h3 className="text-lg font-semibold mb-6">Liens rapides</h3>
+            <h3 className="text-lg font-semibold mb-6 text-primary-400">Liens rapides</h3>
             <ul className="space-y-3">
               {quickLinks.map((link) => (
                 <li key={link.name}>
@@ -146,7 +131,7 @@ export const Footer = () => {
                     to={link.path} 
                     className="text-gray-400 hover:text-white transition-colors flex items-center group"
                   >
-                    <span className="w-0 group-hover:w-2 h-0.5 bg-blue-600 mr-0 group-hover:mr-2 transition-all"></span>
+                    <span className="w-0 group-hover:w-2 h-0.5 bg-primary-500 mr-0 group-hover:mr-2 transition-all"></span>
                     {link.name}
                   </Link>
                 </li>
@@ -156,7 +141,7 @@ export const Footer = () => {
 
           {/* Customer Service */}
           <div>
-            <h3 className="text-lg font-semibold mb-6">Service client</h3>
+            <h3 className="text-lg font-semibold mb-6 text-primary-400">Service client</h3>
             <ul className="space-y-3">
               {customerLinks.map((link) => (
                 <li key={link.name}>
@@ -164,7 +149,7 @@ export const Footer = () => {
                     to={link.path} 
                     className="text-gray-400 hover:text-white transition-colors flex items-center group"
                   >
-                    <span className="w-0 group-hover:w-2 h-0.5 bg-blue-600 mr-0 group-hover:mr-2 transition-all"></span>
+                    <span className="w-0 group-hover:w-2 h-0.5 bg-primary-500 mr-0 group-hover:mr-2 transition-all"></span>
                     {link.name}
                   </Link>
                 </li>
@@ -174,16 +159,16 @@ export const Footer = () => {
 
           {/* Contact Info */}
           <div>
-            <h3 className="text-lg font-semibold mb-6">Contact</h3>
+            <h3 className="text-lg font-semibold mb-6 text-primary-400">Contact</h3>
             <ul className="space-y-4">
               <li className="flex items-start space-x-3">
-                <MapPinIcon className="h-5 w-5 text-gray-400 flex-shrink-0 mt-0.5" />
+                <MapPinIcon className="h-5 w-5 text-primary-400 flex-shrink-0 mt-0.5" />
                 <span className="text-gray-400">
                   {settings?.site_address || "Adeticope, Marché d'Adéticopé, National N1, Lomé, Togo"}
                 </span>
               </li>
               <li className="flex items-center space-x-3">
-                <PhoneIcon className="h-5 w-5 text-gray-400 flex-shrink-0" />
+                <PhoneIcon className="h-5 w-5 text-primary-400 flex-shrink-0" />
                 <a 
                   href={`tel:${settings?.site_phone?.replace(/\s/g, '') || '+22896644990'}`} 
                   className="text-gray-400 hover:text-white transition-colors"
@@ -192,16 +177,16 @@ export const Footer = () => {
                 </a>
               </li>
               <li className="flex items-center space-x-3">
-                <EnvelopeIcon className="h-5 w-5 text-gray-400 flex-shrink-0" />
+                <EnvelopeIcon className="h-5 w-5 text-primary-400 flex-shrink-0" />
                 <a 
-                  href={`mailto:${settings?.site_email || 'esthernabede08@gmail.com'}`} 
+                  href={`mailto:${settings?.site_email || 'Jennynabede08@gmail.com'}`} 
                   className="text-gray-400 hover:text-white transition-colors"
                 >
-                  {settings?.site_email || 'esthernabede08@gmail.com'}
+                  {settings?.site_email || 'Jennynabede08@gmail.com'}
                 </a>
               </li>
               <li className="flex items-start space-x-3">
-                <ClockIcon className="h-5 w-5 text-gray-400 flex-shrink-0 mt-0.5" />
+                <ClockIcon className="h-5 w-5 text-primary-400 flex-shrink-0 mt-0.5" />
                 <span className="text-gray-400">
                   Lun - Ven: 9h - 19h<br />
                   Sam: 10h - 18h
@@ -251,7 +236,7 @@ export const Footer = () => {
         <div className="border-t border-gray-800 mt-8 pt-8 text-center">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-gray-400">
             <div className="order-3 md:order-1">
-              &copy; {currentYear} {settings?.site_name || 'Esther Shop'}. Tous droits réservés.
+              &copy; {currentYear} {settings?.site_name || 'Jenny Shop'}. Tous droits réservés.
             </div>
             <div className="order-1 md:order-2 flex justify-center space-x-6">
               {infoLinks.slice(0, 3).map((link) => (

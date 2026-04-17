@@ -1,9 +1,4 @@
-export const formatPrice = (price) => {
-  return new Intl.NumberFormat('fr-FR', {
-    style: 'currency',
-    currency: 'XOF',
-  }).format(price)
-}
+// utils/helpers.js
 
 export const formatDate = (date) => {
   return new Intl.DateTimeFormat('fr-FR', {

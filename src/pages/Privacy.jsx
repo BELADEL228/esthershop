@@ -3,23 +3,29 @@ import React from 'react'
 export const Privacy = () => {
   return (
     <div className="container mx-auto px-4 py-8 max-w-4xl">
-      <h1 className="text-4xl font-bold mb-8">Politique de Confidentialité</h1>
+      <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-8">
+        Politique de Confidentialité
+      </h1>
       <p className="text-gray-600 dark:text-gray-400 mb-8">
         Dernière mise à jour : {new Date().toLocaleDateString('fr-FR')}
       </p>
 
-      <div className="prose dark:prose-invert max-w-none">
-        <section className="mb-8">
-          <h2 className="text-2xl font-semibold mb-4">1. Introduction</h2>
+      <div className="space-y-8">
+        <section>
+          <h2 className="text-2xl font-semibold text-primary-600 dark:text-primary-400 mb-4">
+            1. Introduction
+          </h2>
           <p className="text-gray-700 dark:text-gray-300">
-            Chez E-Shop, nous accordons une grande importance à la protection de vos données 
+            Chez Jenny Shop, nous accordons une grande importance à la protection de vos données 
             personnelles. La présente politique de confidentialité vous informe sur la manière 
             dont nous collectons, utilisons et protégeons vos informations.
           </p>
         </section>
 
-        <section className="mb-8">
-          <h2 className="text-2xl font-semibold mb-4">2. Données collectées</h2>
+        <section>
+          <h2 className="text-2xl font-semibold text-primary-600 dark:text-primary-400 mb-4">
+            2. Données collectées
+          </h2>
           <p className="text-gray-700 dark:text-gray-300 mb-4">
             Nous collectons les données suivantes :
           </p>
@@ -31,8 +37,10 @@ export const Privacy = () => {
           </ul>
         </section>
 
-        <section className="mb-8">
-          <h2 className="text-2xl font-semibold mb-4">3. Utilisation des données</h2>
+        <section>
+          <h2 className="text-2xl font-semibold text-primary-600 dark:text-primary-400 mb-4">
+            3. Utilisation des données
+          </h2>
           <p className="text-gray-700 dark:text-gray-300 mb-4">
             Vos données sont utilisées pour :
           </p>
@@ -44,8 +52,10 @@ export const Privacy = () => {
           </ul>
         </section>
 
-        <section className="mb-8">
-          <h2 className="text-2xl font-semibold mb-4">4. Partage des données</h2>
+        <section>
+          <h2 className="text-2xl font-semibold text-primary-600 dark:text-primary-400 mb-4">
+            4. Partage des données
+          </h2>
           <p className="text-gray-700 dark:text-gray-300">
             Nous ne vendons pas vos données personnelles. Elles peuvent être partagées avec 
             nos partenaires de confiance (transporteurs, prestataires de paiement) uniquement 
@@ -53,8 +63,10 @@ export const Privacy = () => {
           </p>
         </section>
 
-        <section className="mb-8">
-          <h2 className="text-2xl font-semibold mb-4">5. Conservation des données</h2>
+        <section>
+          <h2 className="text-2xl font-semibold text-primary-600 dark:text-primary-400 mb-4">
+            5. Conservation des données
+          </h2>
           <p className="text-gray-700 dark:text-gray-300">
             Vos données sont conservées pendant la durée nécessaire à la réalisation des 
             finalités pour lesquelles elles ont été collectées, conformément aux obligations 
@@ -62,8 +74,10 @@ export const Privacy = () => {
           </p>
         </section>
 
-        <section className="mb-8">
-          <h2 className="text-2xl font-semibold mb-4">6. Vos droits</h2>
+        <section>
+          <h2 className="text-2xl font-semibold text-primary-600 dark:text-primary-400 mb-4">
+            6. Vos droits
+          </h2>
           <p className="text-gray-700 dark:text-gray-300 mb-4">
             Conformément au RGPD, vous disposez des droits suivants :
           </p>
@@ -77,8 +91,10 @@ export const Privacy = () => {
           </ul>
         </section>
 
-        <section className="mb-8">
-          <h2 className="text-2xl font-semibold mb-4">7. Cookies</h2>
+        <section>
+          <h2 className="text-2xl font-semibold text-primary-600 dark:text-primary-400 mb-4">
+            7. Cookies
+          </h2>
           <p className="text-gray-700 dark:text-gray-300">
             Nous utilisons des cookies pour améliorer votre expérience de navigation. 
             Vous pouvez configurer votre navigateur pour refuser les cookies, mais certaines 
@@ -86,20 +102,26 @@ export const Privacy = () => {
           </p>
         </section>
 
-        <section className="mb-8">
-          <h2 className="text-2xl font-semibold mb-4">8. Sécurité</h2>
+        <section>
+          <h2 className="text-2xl font-semibold text-primary-600 dark:text-primary-400 mb-4">
+            8. Sécurité
+          </h2>
           <p className="text-gray-700 dark:text-gray-300">
             Nous mettons en œuvre toutes les mesures techniques et organisationnelles 
             appropriées pour garantir un niveau de sécurité adapté au risque.
           </p>
         </section>
 
-        <section className="mb-8">
-          <h2 className="text-2xl font-semibold mb-4">9. Contact</h2>
+        <section>
+          <h2 className="text-2xl font-semibold text-primary-600 dark:text-primary-400 mb-4">
+            9. Contact
+          </h2>
           <p className="text-gray-700 dark:text-gray-300">
             Pour toute question concernant cette politique ou pour exercer vos droits, 
             contactez notre Délégué à la Protection des Données à l'adresse : 
-            privacy@eshop.com
+            <a href="mailto:privacy@jennyshop.com" className="text-primary-600 hover:underline ml-1">
+              privacy@jennyshop.com
+            </a>
           </p>
         </section>
       </div>

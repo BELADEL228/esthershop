@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { useOrders } from '../../hooks/useOrders'
-import { formatPrice, formatDate } from '../../utils/helpers'
+import { usePrice } from '../../hooks/usePrice'
+import { formatDate } from '../../utils/helpers'
 import { ORDER_STATUS } from '../../utils/constants'
 import { 
   ShoppingBagIcon, 
@@ -17,6 +18,7 @@ import toast from 'react-hot-toast'
 
 export const OrdersManagement = () => {
   const { orders, loading, stats, updateOrderStatus, refreshOrders } = useOrders()
+  const formatPrice = usePrice()
   const [selectedOrder, setSelectedOrder] = useState(null)
   const [filter, setFilter] = useState('all')
 
@@ -34,26 +36,26 @@ export const OrdersManagement = () => {
 
   const getStatusBadgeColor = (status) => {
     const colors = {
-      pending: 'bg-yellow-100 text-yellow-800',
-      processing: 'bg-blue-100 text-blue-800',
-      shipped: 'bg-purple-100 text-purple-800',
-      delivered: 'bg-green-100 text-green-800',
-      cancelled: 'bg-red-100 text-red-800'
+      pending: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400',
+      processing: 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400',
+      shipped: 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400',
+      delivered: 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400',
+      cancelled: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
     }
-    return colors[status] || 'bg-gray-100 text-gray-800'
+    return colors[status] || 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300'
   }
 
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
       </div>
     )
   }
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-8">Gestion des commandes</h1>
+      <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-8">Gestion des commandes</h1>
 
       {/* Statistiques */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
@@ -63,8 +65,8 @@ export const OrdersManagement = () => {
               <p className="text-sm text-gray-600 dark:text-gray-400">Total commandes</p>
               <p className="text-2xl font-bold text-gray-900 dark:text-white">{stats.total}</p>
             </div>
-            <div className="bg-blue-100 dark:bg-blue-900/20 p-3 rounded-lg">
-              <ShoppingBagIcon className="h-6 w-6 text-blue-600 dark:text-blue-400" />
+            <div className="bg-primary-100 dark:bg-primary-900/20 p-3 rounded-lg">
+              <ShoppingBagIcon className="h-6 w-6 text-primary-600 dark:text-primary-400" />
             </div>
           </div>
         </div>
@@ -97,10 +99,10 @@ export const OrdersManagement = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600 dark:text-gray-400">Chiffre d'affaires</p>
-              <p className="text-2xl font-bold text-blue-600">{formatPrice(stats.revenue)}</p>
+              <p className="text-2xl font-bold text-primary-600">{formatPrice(stats.revenue)}</p>
             </div>
-            <div className="bg-blue-100 dark:bg-blue-900/20 p-3 rounded-lg">
-              <BanknotesIcon className="h-6 w-6 text-blue-600 dark:text-blue-400" />
+            <div className="bg-primary-100 dark:bg-primary-900/20 p-3 rounded-lg">
+              <BanknotesIcon className="h-6 w-6 text-primary-600 dark:text-primary-400" />
             </div>
           </div>
         </div>
@@ -115,7 +117,7 @@ export const OrdersManagement = () => {
           <select
             value={filter}
             onChange={(e) => setFilter(e.target.value)}
-            className="px-3 py-2 border rounded-lg dark:bg-gray-800 dark:border-gray-700 focus:ring-2 focus:ring-blue-500"
+            className="px-3 py-2 border rounded-lg dark:bg-gray-800 dark:border-gray-700 focus:ring-2 focus:ring-primary-500"
           >
             <option value="all">Toutes les commandes</option>
             {Object.entries(ORDER_STATUS).map(([value, label]) => (
@@ -160,8 +162,8 @@ export const OrdersManagement = () => {
                   <tr className="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center space-x-3">
-                        <div className="bg-blue-100 dark:bg-blue-900/20 p-2 rounded-lg">
-                          <ShoppingBagIcon className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                        <div className="bg-primary-100 dark:bg-primary-900/20 p-2 rounded-lg">
+                          <ShoppingBagIcon className="h-4 w-4 text-primary-600 dark:text-primary-400" />
                         </div>
                         <span className="font-mono font-medium">#{order.id.slice(0, 8)}</span>
                       </div>
@@ -181,7 +183,7 @@ export const OrdersManagement = () => {
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className="font-bold text-blue-600 dark:text-blue-400">
+                      <span className="font-bold text-primary-600 dark:text-primary-400">
                         {formatPrice(order.total)}
                       </span>
                     </td>
@@ -189,7 +191,7 @@ export const OrdersManagement = () => {
                       <select
                         value={order.status}
                         onChange={(e) => handleStatusChange(order.id, e.target.value)}
-                        className={`px-2 py-1 rounded-lg text-sm font-medium ${getStatusBadgeColor(order.status)} border-0 focus:ring-2 focus:ring-blue-500`}
+                        className={`px-2 py-1 rounded-lg text-sm font-medium ${getStatusBadgeColor(order.status)} border-0 focus:ring-2 focus:ring-primary-500`}
                       >
                         {Object.entries(ORDER_STATUS).map(([value, label]) => (
                           <option key={value} value={value}>{label}</option>
@@ -199,7 +201,7 @@ export const OrdersManagement = () => {
                     <td className="px-6 py-4 whitespace-nowrap">
                       <button
                         onClick={() => setSelectedOrder(selectedOrder?.id === order.id ? null : order)}
-                        className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 p-2 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors"
+                        className="text-primary-600 hover:text-primary-800 dark:text-primary-400 dark:hover:text-primary-300 p-2 rounded-lg hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-colors"
                       >
                         <EyeIcon className="h-5 w-5" />
                       </button>
@@ -251,14 +253,20 @@ export const OrdersManagement = () => {
                           <div className="md:col-span-3">
                             <h4 className="font-semibold mb-2">Articles</h4>
                             <div className="bg-white dark:bg-gray-800 rounded-lg border divide-y">
-                              {order.order_items?.map((item, index) => (
-                                <div key={index} className="flex justify-between p-3 text-sm">
-                                  <span>
-                                    {item.product?.name || "Produit inconnu"} x {item.quantity}
-                                  </span>
-                                  <span className="font-medium">{formatPrice(item.price * item.quantity)}</span>
+                              {order.order_items && order.order_items.length > 0 ? (
+                                order.order_items.map((item, index) => (
+                                  <div key={index} className="flex justify-between p-3 text-sm">
+                                    <span>
+                                      {item.product?.name || "Produit indisponible"} x {item.quantity}
+                                    </span>
+                                    <span className="font-medium">{formatPrice(item.price * item.quantity)}</span>
+                                  </div>
+                                ))
+                              ) : (
+                                <div className="p-3 text-sm text-gray-500 italic">
+                                  Aucun article trouvé pour cette commande
                                 </div>
-                              ))}
+                              )}
                             </div>
                           </div>
 
@@ -283,7 +291,7 @@ export const OrdersManagement = () => {
 
         {filteredOrders.length === 0 && (
           <div className="text-center py-12">
-            <ShoppingBagIcon className="h-12 w-12 mx-auto text-gray-400 mb-4" />
+            <ShoppingBagIcon className="h-12 w-12 mx-auto text-gray-400 dark:text-gray-500 mb-4" />
             <p className="text-gray-600 dark:text-gray-400">
               Aucune commande trouvée
             </p>

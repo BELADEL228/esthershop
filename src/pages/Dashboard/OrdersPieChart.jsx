@@ -41,12 +41,12 @@ export const OrdersPieChart = () => {
   };
 
   if (loading) {
-    return <div className="h-64 bg-gray-100 animate-pulse rounded-lg"></div>;
+    return <div className="h-64 bg-gray-100 dark:bg-gray-700 animate-pulse rounded-lg"></div>;
   }
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-md">
-      <h3 className="text-lg font-semibold mb-4">Répartition des commandes</h3>
+    <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md border border-gray-200 dark:border-gray-700">
+      <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Répartition des commandes</h3>
       <ResponsiveContainer width="100%" height={300}>
         <PieChart>
           <Pie
@@ -63,8 +63,13 @@ export const OrdersPieChart = () => {
               <Cell key={`cell-${index}`} fill={entry.color} />
             ))}
           </Pie>
-          <Tooltip />
-          <Legend />
+          <Tooltip 
+            contentStyle={{ backgroundColor: 'var(--tw-bg-white)', borderColor: 'var(--tw-border-gray-200)' }}
+            itemStyle={{ color: 'var(--tw-text-gray-900)' }}
+          />
+          <Legend 
+            wrapperStyle={{ color: 'var(--tw-text-gray-700)' }}
+          />
         </PieChart>
       </ResponsiveContainer>
     </div>

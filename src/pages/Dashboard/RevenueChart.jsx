@@ -10,11 +10,12 @@ import {
   Legend
 } from 'recharts';
 import { ordersApi } from '../../services/api/orders';
-import { formatPrice } from '../../utils/helpers';
+import { usePrice } from '../../hooks/usePrice';
 
 export const RevenueChart = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const formatPrice = usePrice();
 
   useEffect(() => {
     loadChartData();
@@ -24,7 +25,6 @@ export const RevenueChart = () => {
     try {
       const orders = await ordersApi.getAll();
       
-      // Grouper les commandes par mois (uniquement les livrées)
       const monthlyData = {};
       
       orders
@@ -45,7 +45,6 @@ export const RevenueChart = () => {
           monthlyData[monthKey].orders += 1;
         });
 
-      // Trier par date et convertir en tableau
       const sortedData = Object.keys(monthlyData)
         .sort()
         .map(key => monthlyData[key]);
@@ -59,34 +58,41 @@ export const RevenueChart = () => {
   };
 
   if (loading) {
-    return <div className="h-64 bg-gray-100 animate-pulse rounded-lg"></div>;
+    return <div className="h-64 bg-gray-100 dark:bg-gray-700 animate-pulse rounded-lg"></div>;
   }
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-md">
-      <h3 className="text-lg font-semibold mb-4">Évolution du chiffre d'affaires</h3>
+    <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md border border-gray-200 dark:border-gray-700">
+      <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+        Évolution du chiffre d'affaires
+      </h3>
       <ResponsiveContainer width="100%" height={300}>
         <AreaChart data={data} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
-          <defs>
-            <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.8}/>
-              <stop offset="95%" stopColor="#3b82f6" stopOpacity={0.1}/>
-            </linearGradient>
-          </defs>
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="month" />
-          <YAxis tickFormatter={(value) => `${value.toLocaleString()} FCFA`} />
-          <Tooltip 
-            formatter={(value) => [`${value.toLocaleString()} FCFA`, 'Chiffre d\'affaires']}
-            labelFormatter={(label) => `Mois: ${label}`}
+          <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" strokeOpacity={0.5} />
+          <XAxis dataKey="month" tick={{ fill: '#6b7280' }} />
+          <YAxis
+            tickFormatter={(value) => formatPrice(value)}
+            tick={{ fill: '#6b7280' }}
           />
-          <Legend />
+          <Tooltip
+            formatter={(value) => [formatPrice(value), 'Chiffre d\'affaires']}
+            labelFormatter={(label) => `Mois: ${label}`}
+            contentStyle={{
+              backgroundColor: 'white',
+              borderColor: '#e5e7eb',
+              borderRadius: '0.5rem',
+              boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)'
+            }}
+            itemStyle={{ color: '#1f2937' }}
+          />
+          <Legend wrapperStyle={{ color: '#4b5563' }} />
           <Area
             type="monotone"
             dataKey="revenue"
-            stroke="#3b82f6"
-            fillOpacity={1}
-            fill="url(#colorRevenue)"
+            stroke="#4f46e5"
+            fill="#4f46e5"
+            fillOpacity={0.2}
+            strokeWidth={2}
             name="Chiffre d'affaires"
           />
         </AreaChart>

@@ -9,14 +9,14 @@ export const AdminRoute = ({ children }) => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-50 to-secondary-50 dark:from-gray-900 dark:to-gray-800">
         <LoadingSpinner />
       </div>
     )
   }
 
   if (!user || !isAdmin) {
-    // Rediriger vers une page d'erreur avec l'information d'où il venait
+    // Redirection vers une page d'erreur avec informations
     return <Navigate to="/unauthorized" state={{ from: location }} replace />
   }
 

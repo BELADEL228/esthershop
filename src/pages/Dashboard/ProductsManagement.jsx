@@ -5,6 +5,7 @@ import { z } from 'zod'
 import { productsApi } from '../../services/api/products'
 import { uploadImage } from '../../services/storage/imageUpload'
 import { useAuth } from '../../hooks/useAuth'
+import { usePrice } from '../../hooks/usePrice'
 import { PencilIcon, TrashIcon, PlusIcon, ArrowPathIcon } from '@heroicons/react/24/outline'
 import toast from 'react-hot-toast'
 
@@ -23,6 +24,7 @@ export const ProductsManagement = () => {
   const [editingProduct, setEditingProduct] = useState(null)
   const [uploading, setUploading] = useState(false)
   const { isAdmin } = useAuth()
+  const formatPrice = usePrice()
 
   const { register, handleSubmit, reset, formState: { errors }, setValue } = useForm({
     resolver: zodResolver(productSchema),
@@ -40,11 +42,9 @@ export const ProductsManagement = () => {
     loadProducts()
   }, [])
 
-  // Charger tous les produits (y compris inactifs) pour l'admin
   const loadProducts = async () => {
     try {
       setLoading(true)
-      // On passe un second paramètre true pour inclure les inactifs
       const data = await productsApi.getAll({}, true)
       setProducts(data)
     } catch (error) {
@@ -98,7 +98,6 @@ export const ProductsManagement = () => {
 
   const handleEdit = (product) => {
     setEditingProduct(product)
-    // S'assurer que les nombres sont bien convertis pour le formulaire
     reset({
       ...product,
       price: product.price,
@@ -106,7 +105,6 @@ export const ProductsManagement = () => {
     })
   }
 
-  // Suppression (soft delete)
   const handleDelete = async (id) => {
     if (!confirm('Êtes-vous sûr de vouloir désactiver ce produit ?')) return
 
@@ -119,12 +117,10 @@ export const ProductsManagement = () => {
     }
   }
 
-  // Restauration (réactivation)
   const handleRestore = async (id) => {
     if (!confirm('Réactiver ce produit ?')) return
 
     try {
-      // On suppose que l'API a une méthode restore, ou on peut utiliser update directement
       await productsApi.update(id, { active: true })
       toast.success('Produit réactivé avec succès')
       loadProducts()
@@ -137,7 +133,7 @@ export const ProductsManagement = () => {
     return (
       <div className="text-center py-12">
         <h2 className="text-2xl font-bold text-red-600">Accès non autorisé</h2>
-        <p className="text-gray-600 mt-2">Vous n'avez pas les droits d'administrateur</p>
+        <p className="text-gray-600 dark:text-gray-400 mt-2">Vous n'avez pas les droits d'administrateur</p>
       </div>
     )
   }
@@ -145,7 +141,7 @@ export const ProductsManagement = () => {
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
       </div>
     )
   }
@@ -153,7 +149,7 @@ export const ProductsManagement = () => {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold">Gestion des Produits</h1>
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Gestion des Produits</h1>
         <button
           onClick={() => {
             setEditingProduct(null)
@@ -166,7 +162,7 @@ export const ProductsManagement = () => {
               images: []
             })
           }}
-          className="bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center hover:bg-blue-700 transition-colors"
+          className="bg-primary-600 text-white px-4 py-2 rounded-lg flex items-center hover:bg-primary-700 transition-colors"
         >
           <PlusIcon className="h-5 w-5 mr-2" />
           Nouveau Produit
@@ -175,7 +171,7 @@ export const ProductsManagement = () => {
 
       {/* Formulaire d'ajout/édition */}
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-8 border border-gray-200 dark:border-gray-700">
-        <h2 className="text-xl font-semibold mb-4">
+        <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
           {editingProduct ? 'Modifier le produit' : 'Ajouter un nouveau produit'}
         </h2>
         
@@ -186,11 +182,9 @@ export const ProductsManagement = () => {
             </label>
             <input
               {...register('name')}
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 dark:text-white"
             />
-            {errors.name && (
-              <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>
-            )}
+            {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>}
           </div>
 
           <div>
@@ -200,26 +194,22 @@ export const ProductsManagement = () => {
             <textarea
               {...register('description')}
               rows={4}
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 dark:text-white"
             />
-            {errors.description && (
-              <p className="text-red-500 text-sm mt-1">{errors.description.message}</p>
-            )}
+            {errors.description && <p className="text-red-500 text-sm mt-1">{errors.description.message}</p>}
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Prix (FCFA)
+                Prix
               </label>
               <input
                 type="number"
                 {...register('price', { valueAsNumber: true })}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 dark:text-white"
               />
-              {errors.price && (
-                <p className="text-red-500 text-sm mt-1">{errors.price.message}</p>
-              )}
+              {errors.price && <p className="text-red-500 text-sm mt-1">{errors.price.message}</p>}
             </div>
 
             <div>
@@ -229,11 +219,9 @@ export const ProductsManagement = () => {
               <input
                 type="number"
                 {...register('stock', { valueAsNumber: true })}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 dark:text-white"
               />
-              {errors.stock && (
-                <p className="text-red-500 text-sm mt-1">{errors.stock.message}</p>
-              )}
+              {errors.stock && <p className="text-red-500 text-sm mt-1">{errors.stock.message}</p>}
             </div>
           </div>
 
@@ -243,7 +231,7 @@ export const ProductsManagement = () => {
             </label>
             <select
               {...register('category')}
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 dark:text-white"
             >
               <option value="">Sélectionner une catégorie</option>
               <option value="accessoires">Accessoires</option>
@@ -251,9 +239,7 @@ export const ProductsManagement = () => {
               <option value="chaussures">Chaussures</option>
               <option value="beaute">Beauté</option>
             </select>
-            {errors.category && (
-              <p className="text-red-500 text-sm mt-1">{errors.category.message}</p>
-            )}
+            {errors.category && <p className="text-red-500 text-sm mt-1">{errors.category.message}</p>}
           </div>
 
           <div>
@@ -266,13 +252,13 @@ export const ProductsManagement = () => {
               accept="image/*"
               onChange={handleImageUpload}
               disabled={uploading}
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md"
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-700"
             />
-            {uploading && <p className="text-blue-500 text-sm mt-1">Upload en cours...</p>}
+            {uploading && <p className="text-primary-600 text-sm mt-1">Upload en cours...</p>}
             {editingProduct?.images?.length > 0 && (
-              <div className="flex gap-2 mt-2">
+              <div className="flex gap-2 mt-2 flex-wrap">
                 {editingProduct.images.map((img, idx) => (
-                  <img key={idx} src={img} alt={`preview-${idx}`} className="h-16 w-16 object-cover rounded" />
+                  <img key={idx} src={img} alt={`preview-${idx}`} className="h-16 w-16 object-cover rounded border border-gray-200 dark:border-gray-600" />
                 ))}
               </div>
             )}
@@ -282,7 +268,7 @@ export const ProductsManagement = () => {
             <button
               type="submit"
               disabled={uploading}
-              className="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition-colors disabled:bg-blue-300"
+              className="bg-primary-600 text-white px-6 py-2 rounded-md hover:bg-primary-700 transition-colors disabled:bg-primary-300"
             >
               {editingProduct ? 'Mettre à jour' : 'Ajouter'}
             </button>
@@ -313,7 +299,7 @@ export const ProductsManagement = () => {
                   Produit
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                  Prix (FCFA)
+                  Prix
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                   Stock
@@ -331,7 +317,7 @@ export const ProductsManagement = () => {
             </thead>
             <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
               {products.map((product) => (
-                <tr key={product.id} className={!product.active ? 'bg-gray-100 dark:bg-gray-700/50' : ''}>
+                <tr key={product.id} className={`${!product.active ? 'bg-gray-100 dark:bg-gray-700/50' : ''} hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors`}>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center">
                       {product.images?.[0] && (
@@ -341,16 +327,14 @@ export const ProductsManagement = () => {
                           className="h-10 w-10 rounded-full object-cover mr-3"
                         />
                       )}
-                      <div>
-                        <div className="text-sm font-medium text-gray-900 dark:text-white">
-                          {product.name}
-                        </div>
+                      <div className="text-sm font-medium text-gray-900 dark:text-white">
+                        {product.name}
                       </div>
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm text-gray-900 dark:text-gray-300">
-                      {new Intl.NumberFormat('fr-FR').format(product.price)} FCFA
+                      {formatPrice(product.price)}
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
@@ -366,12 +350,11 @@ export const ProductsManagement = () => {
                     {product.category}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    {!product.active && (
+                    {!product.active ? (
                       <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-500 text-white">
                         Désactivé
                       </span>
-                    )}
-                    {product.active && (
+                    ) : (
                       <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-500 text-white">
                         Actif
                       </span>
@@ -380,7 +363,7 @@ export const ProductsManagement = () => {
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                     <button
                       onClick={() => handleEdit(product)}
-                      className="text-blue-600 hover:text-blue-900 dark:hover:text-blue-400 mr-3"
+                      className="text-primary-600 hover:text-primary-800 dark:text-primary-400 dark:hover:text-primary-300 mr-3"
                       title="Modifier"
                     >
                       <PencilIcon className="h-5 w-5" />
@@ -388,7 +371,7 @@ export const ProductsManagement = () => {
                     {product.active ? (
                       <button
                         onClick={() => handleDelete(product.id)}
-                        className="text-red-600 hover:text-red-900 dark:hover:text-red-400 mr-3"
+                        className="text-red-600 hover:text-red-700 dark:hover:text-red-400 mr-3"
                         title="Désactiver"
                       >
                         <TrashIcon className="h-5 w-5" />
@@ -396,7 +379,7 @@ export const ProductsManagement = () => {
                     ) : (
                       <button
                         onClick={() => handleRestore(product.id)}
-                        className="text-green-600 hover:text-green-900 dark:hover:text-green-400"
+                        className="text-green-600 hover:text-green-700 dark:hover:text-green-400"
                         title="Réactiver"
                       >
                         <ArrowPathIcon className="h-5 w-5" />

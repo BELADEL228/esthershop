@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import { newsletterApi } from '../../services/api/newsletter'
-// CORRECTION : L'import doit utiliser fetch pour appeler l'API backend
 import { supabase } from '../../services/supabase'
 import { 
   EnvelopeIcon, 
@@ -185,28 +184,28 @@ export const NewsletterManagement = () => {
           <style>
             body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
             .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-            .header { background: linear-gradient(135deg, #2563eb, #1e40af); color: white; padding: 30px 20px; text-align: center; }
+            .header { background: #4f46e5; color: white; padding: 30px 20px; text-align: center; }
             .content { padding: 30px; background: #f9fafb; }
             .footer { text-align: center; padding: 20px; font-size: 12px; color: #666; }
-            .button { display: inline-block; padding: 12px 30px; background: #2563eb; color: white; text-decoration: none; border-radius: 6px; }
+            .button { display: inline-block; padding: 12px 30px; background: #4f46e5; color: white; text-decoration: none; border-radius: 6px; }
           </style>
         </head>
         <body>
           <div class="container">
             <div class="header">
-              <h1>✨ Esther Shop ✨</h1>
+              <h1>✨ Jenny Shop ✨</h1>
             </div>
             <div class="content">
-              <h2 style="color: #2563eb;">${subject}</h2>
+              <h2 style="color: #4f46e5;">${subject}</h2>
               <div>${content.replace(/\n/g, '<br>')}</div>
               <div style="text-align: center; margin-top: 30px;">
-                <a href="https://esthershop-9si1.vercel.app/" class="button">
+                <a href="https://Jennyshop-9si1.vercel.app/" class="button">
                   Découvrir nos produits
                 </a>
               </div>
             </div>
             <div class="footer">
-              <p>© ${new Date().getFullYear()} Esther Shop. Tous droits réservés.</p>
+              <p>© ${new Date().getFullYear()} Jenny Shop. Tous droits réservés.</p>
               <p>Lomé, Togo</p>
             </div>
           </div>
@@ -218,7 +217,7 @@ export const NewsletterManagement = () => {
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
       </div>
     )
   }
@@ -227,7 +226,7 @@ export const NewsletterManagement = () => {
     <div className="container mx-auto px-4 py-8">
       {/* En-tête */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
-        <h1 className="text-3xl font-bold">Gestion de la Newsletter</h1>
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Gestion de la Newsletter</h1>
         <button
           onClick={handleExport}
           className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors flex items-center space-x-2"
@@ -241,8 +240,8 @@ export const NewsletterManagement = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 border border-gray-200 dark:border-gray-700">
           <div className="flex items-center space-x-4">
-            <div className="bg-blue-100 dark:bg-blue-900/20 p-3 rounded-lg">
-              <UsersIcon className="h-6 w-6 text-blue-600 dark:text-blue-400" />
+            <div className="bg-primary-100 dark:bg-primary-900/20 p-3 rounded-lg">
+              <UsersIcon className="h-6 w-6 text-primary-600 dark:text-primary-400" />
             </div>
             <div>
               <p className="text-sm text-gray-600 dark:text-gray-400">Total abonnés</p>
@@ -292,30 +291,30 @@ export const NewsletterManagement = () => {
 
       {/* Formulaire d'envoi */}
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-8 border border-gray-200 dark:border-gray-700">
-        <h2 className="text-xl font-semibold mb-4 text-blue-600 dark:text-blue-400">
+        <h2 className="text-xl font-semibold mb-4 text-primary-600 dark:text-primary-400">
           Envoyer une newsletter
         </h2>
         
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium mb-1">Sujet</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Sujet</label>
             <input
               type="text"
               value={subject}
               onChange={(e) => setSubject(e.target.value)}
-              className="w-full px-3 py-2 border rounded-md dark:bg-gray-700 dark:border-gray-600"
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:text-white"
               placeholder="Ex: Nos nouveautés de la semaine"
               disabled={sending}
             />
           </div>
           
           <div>
-            <label className="block text-sm font-medium mb-1">Contenu</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Contenu</label>
             <textarea
               value={content}
               onChange={(e) => setContent(e.target.value)}
               rows={6}
-              className="w-full px-3 py-2 border rounded-md dark:bg-gray-700 dark:border-gray-600"
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:text-white"
               placeholder="Rédigez votre newsletter ici..."
               disabled={sending}
             />
@@ -328,7 +327,7 @@ export const NewsletterManagement = () => {
             <button
               onClick={handleSendNewsletter}
               disabled={sending || stats.active === 0}
-              className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 disabled:bg-blue-300 transition-colors flex items-center space-x-2"
+              className="bg-primary-600 text-white px-6 py-2 rounded-lg hover:bg-primary-700 disabled:bg-primary-300 transition-colors flex items-center space-x-2"
             >
               <PaperAirplaneIcon className="h-5 w-5" />
               <span>{sending ? 'Envoi en cours...' : 'Envoyer'}</span>
@@ -339,7 +338,7 @@ export const NewsletterManagement = () => {
         {/* Résultats d'envoi */}
         {sendResults && (
           <div className="mt-6 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-            <h3 className="font-semibold mb-2">Résultats de l'envoi :</h3>
+            <h3 className="font-semibold mb-2 text-gray-900 dark:text-white">Résultats de l'envoi :</h3>
             <div className="grid grid-cols-2 gap-4">
               <div className="flex items-center space-x-2 text-green-600">
                 <CheckCircleIcon className="h-5 w-5" />
@@ -353,7 +352,7 @@ export const NewsletterManagement = () => {
             
             {sendResults.failed?.length > 0 && (
               <div className="mt-2 text-sm text-red-600">
-                <p>Échecs :</p>
+                <p className="font-medium">Échecs :</p>
                 <ul className="list-disc list-inside">
                   {sendResults.failed.map((f, i) => (
                     <li key={i}>{f.email} : {f.error}</li>
@@ -412,7 +411,7 @@ export const NewsletterManagement = () => {
                   <td className="px-6 py-4 text-sm font-medium">
                     <button
                       onClick={() => handleDelete(sub.id, sub.email)}
-                      className="text-red-600 hover:text-red-900 dark:hover:text-red-400 transition-colors"
+                      className="text-red-600 hover:text-red-700 dark:hover:text-red-400 transition-colors"
                       title="Supprimer"
                     >
                       <TrashIcon className="h-5 w-5" />
@@ -426,7 +425,7 @@ export const NewsletterManagement = () => {
 
         {subscribers.length === 0 && (
           <div className="text-center py-12">
-            <EnvelopeIcon className="h-12 w-12 mx-auto text-gray-400 mb-4" />
+            <EnvelopeIcon className="h-12 w-12 mx-auto text-gray-400 dark:text-gray-500 mb-4" />
             <p className="text-gray-600 dark:text-gray-400">
               Aucun abonné pour le moment
             </p>

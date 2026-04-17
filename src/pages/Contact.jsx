@@ -7,8 +7,6 @@ import {
   CheckCircleIcon
 } from '@heroicons/react/24/outline'
 import { supabase } from '../services/supabase'
-// CORRECTION : L'import doit être relatif au dossier api à la racine
-// ou utiliser fetch directement (recommandé)
 import toast from 'react-hot-toast'
 
 export const Contact = () => {
@@ -47,7 +45,7 @@ export const Contact = () => {
 
       if (dbError) throw dbError
 
-      // 2. Envoyer l'email via l'API route (CORRIGÉ)
+      // 2. Envoyer l'email via l'API route
       const response = await fetch('/api/send-contact', {
         method: 'POST',
         headers: {
@@ -65,17 +63,14 @@ export const Contact = () => {
 
       if (!response.ok) {
         console.error('Erreur envoi email:', result.error)
-        // Ne pas bloquer l'utilisateur si l'email échoue
       } else {
         console.log('✅ Email envoyé:', result)
       }
 
-      // Succès
       setSuccess(true)
       toast.success('Message envoyé avec succès!')
       setFormData({ name: '', email: '', subject: '', message: '' })
       
-      // Cacher le message de succès après 5 secondes
       setTimeout(() => setSuccess(false), 5000)
       
     } catch (error) {
@@ -100,7 +95,7 @@ export const Contact = () => {
     {
       icon: EnvelopeIcon,
       title: 'Email',
-      content: ['esthernabede08@gmail.com', 'beleiabel8@gmail.com']
+      content: ['Jennynabede08@gmail.com', 'beleiabel8@gmail.com']
     },
     {
       icon: ClockIcon,
@@ -111,7 +106,7 @@ export const Contact = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-4xl font-bold text-center mb-4">Contactez-nous</h1>
+      <h1 className="text-4xl font-bold text-center text-gray-900 dark:text-white mb-4">Contactez-nous</h1>
       <p className="text-xl text-gray-600 dark:text-gray-400 text-center mb-12">
         Une question ? Une suggestion ? N'hésitez pas à nous écrire
       </p>
@@ -120,14 +115,14 @@ export const Contact = () => {
         {/* Informations de contact */}
         <div className="lg:col-span-1">
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 border border-gray-200 dark:border-gray-700">
-            <h2 className="text-2xl font-semibold mb-6 text-blue-600 dark:text-blue-400">
+            <h2 className="text-2xl font-semibold mb-6 text-primary-600 dark:text-primary-400">
               Informations
             </h2>
             <div className="space-y-6">
               {contactInfo.map((info, index) => (
                 <div key={index} className="flex space-x-4">
-                  <div className="bg-blue-100 dark:bg-blue-900/20 p-2 rounded-lg h-fit">
-                    <info.icon className="h-6 w-6 text-blue-600 dark:text-blue-400" />
+                  <div className="bg-primary-100 dark:bg-primary-900/20 p-2 rounded-lg h-fit">
+                    <info.icon className="h-6 w-6 text-primary-600 dark:text-primary-400" />
                   </div>
                   <div>
                     <h3 className="font-semibold mb-1 text-gray-900 dark:text-white">
@@ -162,7 +157,7 @@ export const Contact = () => {
         {/* Formulaire de contact */}
         <div className="lg:col-span-2">
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 border border-gray-200 dark:border-gray-700">
-            <h2 className="text-2xl font-semibold mb-6 text-blue-600 dark:text-blue-400">
+            <h2 className="text-2xl font-semibold mb-6 text-primary-600 dark:text-primary-400">
               Envoyez-nous un message
             </h2>
             
@@ -187,7 +182,7 @@ export const Contact = () => {
                     value={formData.name}
                     onChange={handleChange}
                     required
-                    className="w-full px-3 py-2 border rounded-md dark:bg-gray-700 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-3 py-2 border rounded-md dark:bg-gray-700 dark:border-gray-600 focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                     placeholder="Jean Dupont"
                   />
                 </div>
@@ -201,7 +196,7 @@ export const Contact = () => {
                     value={formData.email}
                     onChange={handleChange}
                     required
-                    className="w-full px-3 py-2 border rounded-md dark:bg-gray-700 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-3 py-2 border rounded-md dark:bg-gray-700 dark:border-gray-600 focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                     placeholder="jean@example.com"
                   />
                 </div>
@@ -217,7 +212,7 @@ export const Contact = () => {
                   value={formData.subject}
                   onChange={handleChange}
                   required
-                  className="w-full px-3 py-2 border rounded-md dark:bg-gray-700 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border rounded-md dark:bg-gray-700 dark:border-gray-600 focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                   placeholder="Question sur un produit..."
                 />
               </div>
@@ -232,7 +227,7 @@ export const Contact = () => {
                   onChange={handleChange}
                   required
                   rows="6"
-                  className="w-full px-3 py-2 border rounded-md dark:bg-gray-700 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border rounded-md dark:bg-gray-700 dark:border-gray-600 focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                   placeholder="Votre message..."
                 />
               </div>
@@ -240,7 +235,7 @@ export const Contact = () => {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 disabled:bg-blue-300 transition-colors font-semibold flex items-center justify-center space-x-2"
+                className="w-full bg-primary-600 text-white py-3 rounded-lg hover:bg-primary-700 disabled:bg-primary-300 transition-colors font-semibold flex items-center justify-center space-x-2"
               >
                 {loading ? (
                   <>

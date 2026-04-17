@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import { productsApi } from '../services/api/products'
 import { useCart } from '../contexts/CartContext'
+import { usePrice } from '../hooks/usePrice'
 import { LoadingSpinner } from '../components/common/LoadingSpinner'
-import { formatPrice } from '../utils/helpers'
 import { ShoppingCartIcon, HeartIcon } from '@heroicons/react/24/outline'
 import { HeartIcon as HeartIconSolid } from '@heroicons/react/24/solid'
 import toast from 'react-hot-toast'
@@ -16,13 +16,12 @@ export const ProductDetail = () => {
   const [quantity, setQuantity] = useState(1)
   const [isFavorite, setIsFavorite] = useState(false)
   const { addToCart } = useCart()
+  const formatPrice = usePrice()
 
-  // Charger le produit et vérifier s'il est en favori
   useEffect(() => {
     loadProduct()
   }, [id])
 
-  // Vérifier le statut favori quand le produit est chargé
   useEffect(() => {
     if (product) {
       checkIfFavorite()
@@ -64,26 +63,19 @@ export const ProductDetail = () => {
 
   const handleToggleFavorite = () => {
     try {
-      // Récupérer les favoris actuels
       const favorites = localStorage.getItem('favorites')
       let favIds = favorites ? JSON.parse(favorites) : []
       
       if (isFavorite) {
-        // RETIRER des favoris
         favIds = favIds.filter(favId => favId !== id)
         toast.success('Retiré des favoris')
       } else {
-        // AJOUTER aux favoris
         favIds = [...favIds, id]
         toast.success('Ajouté aux favoris')
       }
       
-      // Sauvegarder dans localStorage
       localStorage.setItem('favorites', JSON.stringify(favIds))
-      
-      // Mettre à jour l'état local
       setIsFavorite(!isFavorite)
-      
     } catch (error) {
       console.error('Erreur gestion favori:', error)
       toast.error('Erreur lors de la mise à jour des favoris')
@@ -93,7 +85,7 @@ export const ProductDetail = () => {
   if (loading) return <LoadingSpinner />
   if (!product) return (
     <div className="text-center py-12">
-      <p className="text-gray-600">Produit non trouvé</p>
+      <p className="text-gray-600 dark:text-gray-400">Produit non trouvé</p>
     </div>
   )
 
@@ -119,7 +111,7 @@ export const ProductDetail = () => {
                   onClick={() => setSelectedImage(index)}
                   className={`border-2 rounded-lg overflow-hidden transition-all ${
                     selectedImage === index 
-                      ? 'border-blue-600 ring-2 ring-blue-300' 
+                      ? 'border-primary-600 ring-2 ring-primary-300' 
                       : 'border-transparent hover:border-gray-300'
                   }`}
                 >
@@ -143,7 +135,7 @@ export const ProductDetail = () => {
             {product.category}
           </p>
           
-          <div className="text-3xl font-bold text-blue-600 dark:text-blue-400 mb-4">
+          <div className="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-4">
             {formatPrice(product.price)}
           </div>
 
@@ -204,7 +196,7 @@ export const ProductDetail = () => {
               <div className="flex space-x-4">
                 <button
                   onClick={handleAddToCart}
-                  className="flex-1 bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors flex items-center justify-center space-x-2 disabled:bg-blue-300 disabled:cursor-not-allowed"
+                  className="flex-1 bg-primary-600 text-white py-3 rounded-lg font-semibold hover:bg-primary-700 transition-colors flex items-center justify-center space-x-2 disabled:bg-primary-300 disabled:cursor-not-allowed"
                   disabled={product.stock === 0}
                 >
                   <ShoppingCartIcon className="h-5 w-5" />

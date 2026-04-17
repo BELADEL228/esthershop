@@ -2,53 +2,217 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --primary: #5b2e6b;
+  --secondary: #e57ec0;
+  --accent: #f4d0f2;
+  --bg: #f8f5fb;
+  --surface: #ffffff;
+  --text: #2b1736;
+  --muted: #7a6a88;
+  --border: #e3d8eb;
+  --shadow: 0 20px 60px rgba(91, 46, 107, 0.12);
+  --radius: 24px;
+}
+
 @layer base {
   html {
     scroll-behavior: smooth;
   }
-  
+
   body {
-    @apply antialiased text-gray-900;
+    @apply antialiased;
+    margin: 0;
+    min-height: 100%;
+    background: linear-gradient(180deg, #ffffff 0%, #f7effb 100%);
+    color: var(--text);
+    font-family: "Inter", "Assistant", system-ui, sans-serif;
+    line-height: 1.6;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  img {
+    max-width: 100%;
+    display: block;
+  }
+
+  button,
+  input,
+  select,
+  textarea {
+    font: inherit;
   }
 }
 
 @layer components {
   .container {
-    @apply max-w-7xl mx-auto;
+    @apply mx-auto px-4;
+    max-width: 1200px;
   }
-  
+
+  .site-header {
+    @apply sticky top-0 z-50 bg-white/90 backdrop-blur border-b border-[#e3d8eb];
+  }
+
+  .nav-inner {
+    @apply flex flex-wrap items-center justify-between py-4 gap-4;
+  }
+
+  .brand-logo {
+    @apply inline-flex items-center gap-3 text-xl font-bold text-[#5b2e6b];
+  }
+
+  .brand-logo img {
+    width: 48px;
+    height: auto;
+  }
+
+  .nav-links {
+    @apply flex flex-wrap items-center gap-8 list-none p-0 m-0;
+  }
+
+  .nav-links a {
+    @apply text-sm font-semibold text-[#7a6a88] transition-colors duration-200;
+  }
+
+  .nav-links a:hover {
+    color: var(--primary);
+  }
+
+  .hero-section {
+    @apply py-20 text-center;
+    background: linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(244,208,242,0.25) 100%);
+  }
+
+  .hero-title {
+    @apply mx-auto max-w-4xl text-4xl font-extrabold tracking-tight text-[#5b2e6b];
+  }
+
+  .hero-copy {
+    @apply mx-auto mt-6 max-w-3xl text-base text-[#7a6a88];
+  }
+
   .btn-primary {
-    @apply bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors;
+    @apply inline-flex items-center justify-center rounded-full px-8 py-3 font-semibold text-white transition-transform duration-200;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    box-shadow: 0 18px 40px rgba(89, 41, 109, 0.18);
   }
-  
+
+  .btn-primary:hover {
+    transform: translateY(-1px);
+  }
+
   .btn-secondary {
-    @apply bg-gray-200 text-gray-800 px-6 py-2 rounded-lg hover:bg-gray-300 transition-colors;
+    @apply inline-flex items-center justify-center rounded-full border border-[#e3d8eb] bg-white px-8 py-3 font-semibold text-[#5b2e6b] transition-colors duration-200;
   }
-  
+
+  .section-title {
+    @apply text-center mb-12;
+  }
+
+  .section-title h2 {
+    @apply text-3xl font-bold text-[#5b2e6b];
+  }
+
+  .section-title p {
+    @apply mx-auto mt-4 max-w-2xl text-base text-[#7a6a88];
+  }
+
+  .card,
+  .product-card,
+  .testimonial-card,
+  .news-card {
+    @apply overflow-hidden rounded-[24px] border border-[#e3d8eb] bg-white transition duration-200 ease-out;
+    box-shadow: var(--shadow);
+  }
+
+  .card:hover,
+  .product-card:hover,
+  .testimonial-card:hover,
+  .news-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 24px 55px rgba(91, 46, 107, 0.16);
+  }
+
+  .card-body {
+    @apply p-7;
+  }
+
+  .card-title {
+    @apply text-xl font-semibold text-[#5b2e6b];
+  }
+
+  .card-text {
+    @apply mt-3 text-sm leading-7 text-[#7a6a88];
+  }
+
+  .form-group {
+    @apply mb-5 grid gap-3;
+  }
+
   .input-field {
-    @apply w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500;
+    @apply w-full rounded-[16px] border border-[#e3d8eb] bg-white px-4 py-3 text-sm text-[#2b1736] outline-none transition duration-200;
+  }
+
+  .input-field:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px rgba(229, 126, 192, 0.14);
+  }
+
+  .footer-section {
+    @apply py-16 text-[#7a6a88];
+  }
+
+  .footer-inner {
+    @apply flex flex-wrap items-start justify-between gap-6;
+  }
+
+  .footer-card {
+    @apply max-w-sm;
+  }
+
+  .badge {
+    @apply inline-flex items-center justify-center rounded-full bg-[#f4d0f2] px-3 py-1 text-sm font-semibold text-[#5b2e6b];
+  }
+
+  .table {
+    @apply w-full border-collapse rounded-[16px] overflow-hidden;
+    background: var(--surface);
+  }
+
+  .table th,
+  .table td {
+    @apply px-5 py-4 border-b border-[#e3d8eb] text-left;
+  }
+
+  .table th {
+    @apply bg-[#faf5ff] font-semibold text-[#5b2e6b];
   }
 }
 
 @layer utilities {
   .line-clamp-1 {
+    @apply overflow-hidden;
     display: -webkit-box;
     -webkit-line-clamp: 1;
     -webkit-box-orient: vertical;
-    overflow: hidden;
   }
-  
+
   .line-clamp-2 {
+    @apply overflow-hidden;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
-    overflow: hidden;
   }
-  
+
   .line-clamp-3 {
+    @apply overflow-hidden;
     display: -webkit-box;
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
-    overflow: hidden;
   }
 }

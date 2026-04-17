@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useCart } from '../../hooks/useCart'
 import { useAuth } from '../../hooks/useAuth'
-import { formatPrice } from '../../utils/helpers'
+import { usePrice } from '../../hooks/usePrice'
 import { 
   ShoppingCartIcon, 
   HeartIcon,
@@ -14,6 +14,7 @@ import toast from 'react-hot-toast'
 export const ProductCard = ({ product }) => {
   const { addToCart } = useCart()
   const { user } = useAuth()
+  const formatPrice = usePrice()
   const [isFavorite, setIsFavorite] = useState(false)
   const [imageLoaded, setImageLoaded] = useState(false)
   const [isHovered, setIsHovered] = useState(false)
@@ -50,11 +51,10 @@ export const ProductCard = ({ product }) => {
       onMouseLeave={() => setIsHovered(false)}
     >
       <Link to={`/products/${product.id}`} className="block relative">
-        {/* Image avec effet de zoom */}
         <div className="relative h-64 overflow-hidden bg-gray-100">
           {!imageLoaded && (
             <div className="absolute inset-0 flex items-center justify-center">
-              <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+              <div className="w-8 h-8 border-4 border-primary-600 border-t-transparent rounded-full animate-spin"></div>
             </div>
           )}
           <img
@@ -66,10 +66,9 @@ export const ProductCard = ({ product }) => {
             onLoad={() => setImageLoaded(true)}
           />
           
-          {/* Badges */}
           <div className="absolute top-2 left-2 flex flex-col space-y-2">
             {product.stock === 0 && (
-              <span className="bg-red-500 text-white text-xs px-2 py-1 rounded">
+              <span className="bg-red-600 text-white text-xs px-2 py-1 rounded">
                 Rupture de stock
               </span>
             )}
@@ -79,19 +78,18 @@ export const ProductCard = ({ product }) => {
               </span>
             )}
             {discount > 0 && (
-              <span className="bg-green-500 text-white text-xs px-2 py-1 rounded">
+              <span className="bg-green-600 text-white text-xs px-2 py-1 rounded">
                 -{discount}%
               </span>
             )}
             {product.isNew && (
-              <span className="bg-blue-500 text-white text-xs px-2 py-1 rounded">
+              <span className="bg-primary-600 text-white text-xs px-2 py-1 rounded">
                 Nouveau
               </span>
             )}
           </div>
 
-          {/* Boutons d'action (apparaissent au hover) */}
-          <div className={`absolute inset-0 bg-black bg-opacity-20 transition-opacity duration-300 flex items-center justify-center space-x-2 ${
+          <div className={`absolute inset-0 bg-black bg-opacity-30 transition-opacity duration-300 flex items-center justify-center space-x-2 ${
             isHovered ? 'opacity-100' : 'opacity-0'
           }`}>
             <button
@@ -99,8 +97,8 @@ export const ProductCard = ({ product }) => {
               disabled={product.stock === 0}
               className={`p-2 rounded-full transition-all transform hover:scale-110 ${
                 product.stock === 0 
-                  ? 'bg-gray-300 cursor-not-allowed' 
-                  : 'bg-white text-blue-600 hover:bg-blue-600 hover:text-white'
+                  ? 'bg-gray-400 cursor-not-allowed' 
+                  : 'bg-white text-primary-600 hover:bg-primary-600 hover:text-white'
               }`}
               title="Ajouter au panier"
             >
@@ -129,9 +127,8 @@ export const ProductCard = ({ product }) => {
           </div>
         </div>
 
-        {/* Contenu */}
         <div className="p-4">
-          <h3 className="text-lg font-semibold mb-2 line-clamp-1 hover:text-blue-600 transition-colors">
+          <h3 className="text-lg font-semibold mb-2 line-clamp-1 hover:text-primary-600 transition-colors">
             {product.name}
           </h3>
           
@@ -141,7 +138,7 @@ export const ProductCard = ({ product }) => {
           
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center space-x-2">
-              <span className="text-xl font-bold text-blue-600">
+              <span className="text-xl font-bold text-primary-600">
                 {formatPrice(product.price)}
               </span>
               {product.originalPrice && (
@@ -155,7 +152,6 @@ export const ProductCard = ({ product }) => {
             </span>
           </div>
 
-          {/* Note et avis */}
           {product.rating && (
             <div className="flex items-center space-x-1 mb-3">
               <div className="flex text-yellow-400">
@@ -174,14 +170,13 @@ export const ProductCard = ({ product }) => {
             </div>
           )}
 
-          {/* Bouton Ajouter au panier (mobile/fallback) */}
           <button
             onClick={handleAddToCart}
             disabled={product.stock === 0}
             className={`w-full mt-2 py-2 px-4 rounded-lg transition-colors flex items-center justify-center space-x-2 lg:hidden ${
               product.stock === 0
                 ? 'bg-gray-300 cursor-not-allowed'
-                : 'bg-blue-600 hover:bg-blue-700 text-white'
+                : 'bg-primary-600 hover:bg-primary-700 text-white'
             }`}
           >
             <ShoppingCartIcon className="h-4 w-4" />
@@ -189,7 +184,6 @@ export const ProductCard = ({ product }) => {
           </button>
         </div>
 
-        {/* Livraison gratuite badge */}
         {product.freeShipping && (
           <div className="absolute bottom-2 right-2 bg-green-100 text-green-800 text-xs px-2 py-1 rounded">
             Livraison gratuite

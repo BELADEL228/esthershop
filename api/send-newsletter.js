@@ -34,7 +34,7 @@ export default async function handler(req, res) {
     for (const email of subscribers) {
       try {
         const info = await transporter.sendMail({
-          from: `"Esther Shop" <${process.env.VITE_GMAIL_USER}>`,
+          from: `"Jenny Shop" <${process.env.VITE_GMAIL_USER}>`,
           to: email,
           subject: subject,
           html: htmlContent

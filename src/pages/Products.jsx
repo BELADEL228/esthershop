@@ -59,12 +59,9 @@ export const Products = () => {
   const applyFilters = () => {
     let result = [...products]
 
-    // Filtre par catégorie
     if (filters.category) {
       result = result.filter(p => p.category === filters.category)
     }
-
-    // Filtre par recherche
     if (filters.search) {
       const searchLower = filters.search.toLowerCase()
       result = result.filter(p => 
@@ -72,23 +69,16 @@ export const Products = () => {
         p.description.toLowerCase().includes(searchLower)
       )
     }
-
-    // Filtre par prix minimum
     if (filters.minPrice) {
       result = result.filter(p => p.price >= parseFloat(filters.minPrice))
     }
-
-    // Filtre par prix maximum
     if (filters.maxPrice) {
       result = result.filter(p => p.price <= parseFloat(filters.maxPrice))
     }
-
-    // Filtre stock disponible
     if (filters.inStock) {
       result = result.filter(p => p.stock > 0)
     }
 
-    // Tri
     switch (filters.sort) {
       case 'price-asc':
         result.sort((a, b) => a.price - b.price)
@@ -105,7 +95,7 @@ export const Products = () => {
       case 'stock':
         result.sort((a, b) => b.stock - a.stock)
         break
-      default: // 'newest'
+      default:
         result.sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
     }
 
@@ -143,10 +133,9 @@ export const Products = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      {/* Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">Nos Produits</h1>
-        <p className="text-gray-600">
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Nos Produits</h1>
+        <p className="text-gray-600 dark:text-gray-400">
           {filteredProducts.length} produit(s) trouvé(s)
         </p>
       </div>
@@ -158,21 +147,20 @@ export const Products = () => {
           placeholder="Rechercher un produit..."
           value={filters.search}
           onChange={(e) => handleFilterChange({ ...filters, search: e.target.value })}
-          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-gray-800 dark:text-white"
         />
       </div>
 
       {/* Mobile filter button */}
       <button
         onClick={() => setShowFilters(!showFilters)}
-        className="md:hidden flex items-center justify-center space-x-2 bg-blue-600 text-white px-4 py-2 rounded-lg mb-4 w-full"
+        className="md:hidden flex items-center justify-center space-x-2 bg-primary-600 text-white px-4 py-2 rounded-lg mb-4 w-full hover:bg-primary-700 transition-colors"
       >
         <FunnelIcon className="h-5 w-5" />
         <span>{showFilters ? 'Masquer les filtres' : 'Afficher les filtres'}</span>
       </button>
 
       <div className="flex flex-col md:flex-row gap-8">
-        {/* Filters sidebar */}
         <div className={`md:w-64 ${showFilters ? 'block' : 'hidden md:block'}`}>
           <ProductFilters
             filters={filters}
@@ -182,17 +170,15 @@ export const Products = () => {
           />
         </div>
 
-        {/* Products grid */}
         <div className="flex-1">
-          {/* Sort options */}
           <div className="mb-6 flex justify-between items-center">
             <div className="flex items-center space-x-2">
-              <label htmlFor="sort" className="text-gray-600">Trier par:</label>
+              <label htmlFor="sort" className="text-gray-600 dark:text-gray-400">Trier par:</label>
               <select
                 id="sort"
                 value={filters.sort}
                 onChange={(e) => handleFilterChange({ ...filters, sort: e.target.value })}
-                className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-gray-800 dark:text-white"
               >
                 <option value="newest">Plus récents</option>
                 <option value="price-asc">Prix croissant</option>
@@ -202,14 +188,11 @@ export const Products = () => {
                 <option value="stock">Stock</option>
               </select>
             </div>
-
-            {/* Résultats trouvés */}
-            <div className="text-sm text-gray-500 hidden md:block">
+            <div className="text-sm text-gray-500 dark:text-gray-400 hidden md:block">
               {filteredProducts.length} résultats
             </div>
           </div>
 
-          {/* Product List */}
           <ProductList 
             products={filteredProducts} 
             loading={loading}

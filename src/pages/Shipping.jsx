@@ -44,7 +44,7 @@ export const Shipping = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-4xl font-bold text-center mb-4">
+      <h1 className="text-4xl font-bold text-center text-gray-900 dark:text-white mb-4">
         Livraison
       </h1>
       <p className="text-xl text-gray-600 dark:text-gray-400 text-center mb-12">
@@ -56,16 +56,16 @@ export const Shipping = () => {
         {shippingMethods.map((method, index) => (
           <div
             key={index}
-            className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 text-center"
+            className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 text-center border border-gray-200 dark:border-gray-700"
           >
-            <div className="bg-blue-100 dark:bg-blue-900/20 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-              <method.icon className="h-8 w-8 text-blue-600 dark:text-blue-400" />
+            <div className="bg-primary-100 dark:bg-primary-900/20 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+              <method.icon className="h-8 w-8 text-primary-600 dark:text-primary-400" />
             </div>
-            <h3 className="text-xl font-semibold mb-2">{method.name}</h3>
+            <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">{method.name}</h3>
             <p className="text-gray-600 dark:text-gray-400 mb-2">
               Délai: {method.delay}
             </p>
-            <p className="text-2xl font-bold text-blue-600 dark:text-blue-400 mb-2">
+            <p className="text-2xl font-bold text-primary-600 dark:text-primary-400 mb-2">
               {method.price}
             </p>
             {method.free && (
@@ -78,8 +78,8 @@ export const Shipping = () => {
       </div>
 
       {/* Zones de livraison */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-8">
-        <h2 className="text-2xl font-semibold mb-4">Zones de livraison</h2>
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-8 border border-gray-200 dark:border-gray-700">
+        <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">Zones de livraison</h2>
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
           {countries.map((country, index) => (
             <div key={index} className="flex items-center space-x-2">
@@ -92,21 +92,21 @@ export const Shipping = () => {
 
       {/* Informations complémentaires */}
       <div className="grid md:grid-cols-2 gap-6">
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-          <h2 className="text-xl font-semibold mb-4">Suivi de colis</h2>
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 border border-gray-200 dark:border-gray-700">
+          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Suivi de colis</h2>
           <p className="text-gray-600 dark:text-gray-400 mb-4">
             Une fois votre commande expédiée, vous recevrez un email avec un numéro de suivi. 
             Vous pouvez également suivre vos colis depuis votre espace client.
           </p>
-          <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
-            <p className="text-sm text-blue-800 dark:text-blue-200">
+          <div className="bg-primary-50 dark:bg-primary-900/20 p-4 rounded-lg">
+            <p className="text-sm text-primary-800 dark:text-primary-200">
               💡 Tous nos colis sont assurés et suivis
             </p>
           </div>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-          <h2 className="text-xl font-semibold mb-4">Questions fréquentes</h2>
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 border border-gray-200 dark:border-gray-700">
+          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Questions fréquentes</h2>
           <ul className="space-y-3 text-gray-600 dark:text-gray-400">
             <li>• Puis-je modifier mon adresse de livraison ?</li>
             <li>• Que faire si je ne suis pas chez moi ?</li>
@@ -115,7 +115,7 @@ export const Shipping = () => {
           </ul>
           <a
             href="/faq"
-            className="inline-block mt-4 text-blue-600 dark:text-blue-400 hover:underline"
+            className="inline-block mt-4 text-primary-600 dark:text-primary-400 hover:underline"
           >
             Voir la FAQ →
           </a>

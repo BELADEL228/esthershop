@@ -81,7 +81,7 @@ export const FAQ = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-4xl font-bold text-center mb-4">
+      <h1 className="text-4xl font-bold text-center text-gray-900 dark:text-white mb-4">
         Foire Aux Questions
       </h1>
       <p className="text-xl text-gray-600 dark:text-gray-400 text-center mb-12">
@@ -91,7 +91,7 @@ export const FAQ = () => {
       <div className="max-w-3xl mx-auto">
         {faqs.map((category, categoryIndex) => (
           <div key={categoryIndex} className="mb-8">
-            <h2 className="text-2xl font-semibold mb-4 text-blue-600 dark:text-blue-400">
+            <h2 className="text-2xl font-semibold mb-4 text-primary-600 dark:text-primary-400">
               {category.category}
             </h2>
             
@@ -107,11 +107,11 @@ export const FAQ = () => {
                       onClick={() => toggleFAQ(index)}
                       className="w-full px-6 py-4 text-left bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 flex justify-between items-center transition-colors"
                     >
-                      <span className="font-medium">{faq.q}</span>
+                      <span className="font-medium text-gray-900 dark:text-white">{faq.q}</span>
                       {openIndex === index ? (
-                        <ChevronUpIcon className="h-5 w-5 text-gray-500" />
+                        <ChevronUpIcon className="h-5 w-5 text-gray-500 dark:text-gray-400" />
                       ) : (
-                        <ChevronDownIcon className="h-5 w-5 text-gray-500" />
+                        <ChevronDownIcon className="h-5 w-5 text-gray-500 dark:text-gray-400" />
                       )}
                     </button>
                     
@@ -131,14 +131,14 @@ export const FAQ = () => {
       </div>
 
       {/* Section contact */}
-      <div className="mt-12 text-center p-8 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-        <h3 className="text-xl font-semibold mb-2">Vous n'avez pas trouvé votre réponse ?</h3>
+      <div className="mt-12 text-center p-8 bg-primary-50 dark:bg-primary-900/20 rounded-lg">
+        <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">Vous n'avez pas trouvé votre réponse ?</h3>
         <p className="text-gray-600 dark:text-gray-400 mb-4">
           Notre équipe est là pour vous aider
         </p>
         <a
           href="/contact"
-          className="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors"
+          className="inline-block bg-primary-600 text-white px-6 py-3 rounded-lg hover:bg-primary-700 transition-colors"
         >
           Contactez-nous
         </a>

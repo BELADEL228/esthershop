@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { ordersApi } from '../../services/api/orders'
 import { productsApi } from '../../services/api/products'
 import { usersApi } from '../../services/api/users'
-import { formatPrice } from '../../utils/helpers'
+import { usePrice } from '../../hooks/usePrice'
 import { RevenueChart } from './RevenueChart'
 import { OrdersPieChart } from './OrdersPieChart'
 import {
@@ -15,13 +15,14 @@ import {
 } from '@heroicons/react/24/outline'
 
 export const DashboardHome = () => {
+  const formatPrice = usePrice()
   const [stats, setStats] = useState({
     totalOrders: 0,
     totalRevenue: 0,
     totalProducts: 0,
     totalUsers: 0,
     recentOrders: [],
-    revenueEvolution: 0, // Pourcentage d'évolution
+    revenueEvolution: 0,
     previousRevenue: 0
   })
   const [loading, setLoading] = useState(true)
@@ -38,11 +39,9 @@ export const DashboardHome = () => {
         usersApi.getAll()
       ])
 
-      // Commandes livrées pour le CA
       const deliveredOrders = orders.filter(order => order.status === 'delivered')
       const totalRevenue = deliveredOrders.reduce((sum, order) => sum + order.total, 0)
       
-      // Calcul de l'évolution (mois précédent vs mois courant)
       const now = new Date()
       const currentMonth = now.getMonth()
       const currentYear = now.getFullYear()
@@ -116,23 +115,22 @@ export const DashboardHome = () => {
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
       </div>
     )
   }
 
   return (
     <div className="space-y-6">
-      <h1 className="text-3xl font-bold">Tableau de bord</h1>
+      <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Tableau de bord</h1>
 
-      {/* Statistiques avec indicateurs d'évolution */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {cards.map((card, index) => (
-          <div key={index} className="bg-white rounded-lg shadow-md p-6 border border-gray-200">
+          <div key={index} className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 border border-gray-200 dark:border-gray-700">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-gray-600 text-sm">{card.name}</p>
-                <p className="text-2xl font-bold mt-1">{card.value}</p>
+                <p className="text-gray-600 dark:text-gray-400 text-sm">{card.name}</p>
+                <p className="text-2xl font-bold text-gray-900 dark:text-white mt-1">{card.value}</p>
                 {card.evolution && (
                   <div className="flex items-center mt-2 text-sm">
                     {card.evolution > 0 ? (
@@ -146,7 +144,7 @@ export const DashboardHome = () => {
                         <span className="text-red-600">{card.evolution}%</span>
                       </>
                     ) : null}
-                    <span className="text-gray-400 text-xs ml-2">{card.comparison}</span>
+                    <span className="text-gray-400 dark:text-gray-500 text-xs ml-2">{card.comparison}</span>
                   </div>
                 )}
               </div>
@@ -158,46 +156,39 @@ export const DashboardHome = () => {
         ))}
       </div>
 
-      {/* Graphiques */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <RevenueChart />
         <OrdersPieChart />
       </div>
 
-      {/* Commandes récentes */}
-      <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200">
-        <h2 className="text-xl font-semibold mb-4">Commandes récentes</h2>
-        
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 border border-gray-200 dark:border-gray-700">
+        <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Commandes récentes</h2>
         <div className="overflow-x-auto">
           <table className="min-w-full">
             <thead>
-              <tr className="border-b">
-                <th className="text-left py-3 px-4">ID</th>
-                <th className="text-left py-3 px-4">Date</th>
-                <th className="text-left py-3 px-4">Client</th>
-                <th className="text-left py-3 px-4">Total</th>
-                <th className="text-left py-3 px-4">Statut</th>
+              <tr className="border-b border-gray-200 dark:border-gray-700">
+                <th className="text-left py-3 px-4 text-gray-600 dark:text-gray-400">ID</th>
+                <th className="text-left py-3 px-4 text-gray-600 dark:text-gray-400">Date</th>
+                <th className="text-left py-3 px-4 text-gray-600 dark:text-gray-400">Client</th>
+                <th className="text-left py-3 px-4 text-gray-600 dark:text-gray-400">Total</th>
+                <th className="text-left py-3 px-4 text-gray-600 dark:text-gray-400">Statut</th>
               </tr>
             </thead>
             <tbody>
               {stats.recentOrders.map((order) => (
-                <tr key={order.id} className="border-b hover:bg-gray-50">
-                  <td className="py-3 px-4 font-mono">#{order.id.slice(0, 8)}</td>
-                  <td className="py-3 px-4">
-                    {new Date(order.created_at).toLocaleDateString()}
-                  </td>
-                  <td className="py-3 px-4">
-                    {order.shipping_address?.firstName} {order.shipping_address?.lastName || 'N/A'}
-                  </td>
-                  <td className="py-3 px-4 font-medium">{formatPrice(order.total)}</td>
+                <tr key={order.id} className="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700">
+                  <td className="py-3 px-4 font-mono text-gray-900 dark:text-white">#{order.id.slice(0, 8)}</td>
+                  <td className="py-3 px-4 text-gray-700 dark:text-gray-300">{new Date(order.created_at).toLocaleDateString()}</td>
+                  <td className="py-3 px-4 text-gray-700 dark:text-gray-300">{order.shipping_address?.firstName} {order.shipping_address?.lastName || 'N/A'}</td>
+                  <td className="py-3 px-4 font-medium text-gray-900 dark:text-white">{formatPrice(order.total)}</td>
                   <td className="py-3 px-4">
                     <span className={`px-2 py-1 rounded-full text-xs ${
-                      order.status === 'delivered' ? 'bg-green-100 text-green-800' :
-                      order.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-                      order.status === 'processing' ? 'bg-blue-100 text-blue-800' :
-                      order.status === 'shipped' ? 'bg-purple-100 text-purple-800' :
-                      order.status === 'cancelled' ? 'bg-red-100 text-red-800' :
-                      'bg-gray-100 text-gray-800'
+                      order.status === 'delivered' ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' :
+                      order.status === 'pending' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400' :
+                      order.status === 'processing' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400' :
+                      order.status === 'shipped' ? 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400' :
+                      order.status === 'cancelled' ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400' :
+                      'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300'
                     }`}>
                       {order.status}
                     </span>

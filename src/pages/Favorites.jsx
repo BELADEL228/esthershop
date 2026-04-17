@@ -58,19 +58,15 @@ export const Favorites = () => {
     let newFavoriteIds
     
     if (favoriteIds.includes(productId)) {
-      // RETIRER des favoris
       newFavoriteIds = favoriteIds.filter(id => id !== productId)
       toast.success('Produit retiré des favoris')
     } else {
-      // AJOUTER aux favoris
       newFavoriteIds = [...favoriteIds, productId]
       toast.success('Produit ajouté aux favoris')
     }
     
     setFavoriteIds(newFavoriteIds)
     localStorage.setItem('favorites', JSON.stringify(newFavoriteIds))
-    
-    // Recharger la liste des favoris avec les nouveaux IDs
     loadFavoriteProducts(newFavoriteIds)
   }
 
@@ -118,7 +114,7 @@ export const Favorites = () => {
         
         <Link
           to="/products"
-          className="inline-flex items-center space-x-2 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors"
+          className="inline-flex items-center space-x-2 bg-primary-600 text-white px-6 py-3 rounded-lg hover:bg-primary-700 transition-colors"
         >
           <ShoppingBagIcon className="h-5 w-5" />
           <span>Découvrir nos produits</span>
@@ -143,7 +139,7 @@ export const Favorites = () => {
         
         <button
           onClick={clearAllFavorites}
-          className="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 text-sm font-medium transition-colors"
+          className="text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 text-sm font-medium transition-colors"
         >
           Vider la liste
         </button>
@@ -169,13 +165,13 @@ export const Favorites = () => {
 
       {/* Message pour les utilisateurs non connectés */}
       {!user && (
-        <div className="mt-8 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg text-center">
-          <p className="text-blue-800 dark:text-blue-200">
+        <div className="mt-8 p-4 bg-primary-50 dark:bg-primary-900/20 rounded-lg text-center">
+          <p className="text-primary-800 dark:text-primary-200">
             💡 Connectez-vous pour sauvegarder vos favoris sur tous vos appareils !
           </p>
           <Link
             to="/login"
-            className="inline-block mt-2 text-blue-600 dark:text-blue-400 hover:underline"
+            className="inline-block mt-2 text-primary-600 dark:text-primary-400 hover:underline"
           >
             Se connecter
           </Link>

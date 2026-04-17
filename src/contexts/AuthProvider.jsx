@@ -29,7 +29,7 @@ export const AuthProvider = ({ children }) => {
         .from('user_roles')
         .select('role')
         .eq('user_id', userId)
-        .single()
+        .maybeSingle()  // ← Correction : .maybeSingle() au lieu de .single()
       
       if (error) {
         console.error('Erreur vérification admin:', error)

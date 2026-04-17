@@ -3,7 +3,8 @@ import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../../hooks/useAuth'
 import { useCart } from '../../hooks/useCart'
 import { useTheme } from '../../hooks/useTheme'
-import { useSettings } from '../../hooks/useSettings'  // ← AJOUTÉ
+import { useSettings } from '../../hooks/useSettings'
+import { useCurrency } from '../../contexts/CurrencyContext'
 import { 
   ShoppingCartIcon, 
   UserIcon, 
@@ -14,8 +15,8 @@ import {
   SunIcon,
   MoonIcon,
   ChevronDownIcon,
-  InformationCircleIcon,  // ← AJOUTÉ pour À propos
-  EnvelopeIcon             // ← AJOUTÉ pour Contact
+  InformationCircleIcon,
+  EnvelopeIcon
 } from '@heroicons/react/24/outline'
 import { motion, AnimatePresence } from 'framer-motion'
 
@@ -28,41 +29,35 @@ export const Header = () => {
   const { user, isAdmin, signOut } = useAuth()
   const { cart } = useCart()
   const { darkMode, toggleDarkMode } = useTheme()
-  const { settings } = useSettings()  // ← AJOUTÉ pour récupérer le nom du site
+  const { settings } = useSettings()
+  const { currency, setCurrency } = useCurrency()
   const navigate = useNavigate()
   const location = useLocation()
   const searchInputRef = useRef(null)
   const userMenuRef = useRef(null)
 
-  // Détection du scroll
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 20)
-    }
+    const handleScroll = () => setScrolled(window.scrollY > 20)
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  // Fermer les menus au changement de route
   useEffect(() => {
     const closeMenus = () => {
       setIsMenuOpen(false)
       setIsUserMenuOpen(false)
       setIsSearchOpen(false)
     }
-    
     const frame = requestAnimationFrame(closeMenus)
     return () => cancelAnimationFrame(frame)
   }, [location.pathname])
 
-  // Focus sur la recherche quand elle s'ouvre
   useEffect(() => {
     if (isSearchOpen && searchInputRef.current) {
       searchInputRef.current.focus()
     }
   }, [isSearchOpen])
 
-  // Fermer le menu utilisateur au clic outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (userMenuRef.current && !userMenuRef.current.contains(event.target)) {
@@ -98,69 +93,63 @@ export const Header = () => {
     }`}>
       <nav className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16 md:h-20">
-          {/* Logo avec nom dynamique depuis les settings */}
-          <Link 
-            to="/" 
-            className="flex items-center space-x-2 group"
-          >
-            <div className="bg-blue-600 rounded-lg flex items-center justify-center px-3 py-1 transform group-hover:rotate-12 transition-transform">
-              <span className="text-white font-bold text-xl">
-                {settings?.site_name?.split(' ')[0] || "Esther'"}
-              </span>
-            </div>
-            <span className="text-xl font-bold text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-              Shop
-            </span>
+          {/* Logo avec image */}
+          <Link to="/" className="flex items-center space-x-2 group">
+            <img 
+              src="/logo.jpg" 
+              alt={settings?.site_name || "Jenny Shop"} 
+              className="h-10 w-auto object-contain transition-transform group-hover:scale-105"
+            />
           </Link>
 
-          {/* Desktop Navigation */}
+          {/* Desktop Navigation - couleurs unies */}
           <div className="hidden md:flex items-center space-x-6 lg:space-x-8">
             <Link 
               to="/" 
-              className={`text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors relative group ${
-                location.pathname === '/' ? 'text-blue-600 dark:text-blue-400' : ''
+              className={`text-gray-700 dark:text-gray-300 hover:text-primary-600 transition-colors relative group ${
+                location.pathname === '/' ? 'text-primary-600 font-semibold' : ''
               }`}
             >
               Accueil
-              <span className={`absolute bottom-0 left-0 w-full h-0.5 bg-blue-600 transform scale-x-0 group-hover:scale-x-100 transition-transform ${
+              <span className={`absolute bottom-0 left-0 w-full h-0.5 bg-primary-600 transform scale-x-0 group-hover:scale-x-100 transition-transform ${
                 location.pathname === '/' ? 'scale-x-100' : ''
               }`} />
             </Link>
             
             <Link 
               to="/products" 
-              className={`text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors relative group ${
-                location.pathname.includes('/products') ? 'text-blue-600 dark:text-blue-400' : ''
+              className={`text-gray-700 dark:text-gray-300 hover:text-primary-600 transition-colors relative group ${
+                location.pathname.includes('/products') ? 'text-primary-600 font-semibold' : ''
               }`}
             >
               Produits
-              <span className={`absolute bottom-0 left-0 w-full h-0.5 bg-blue-600 transform scale-x-0 group-hover:scale-x-100 transition-transform ${
+              <span className={`absolute bottom-0 left-0 w-full h-0.5 bg-primary-600 transform scale-x-0 group-hover:scale-x-100 transition-transform ${
                 location.pathname.includes('/products') ? 'scale-x-100' : ''
               }`} />
             </Link>
 
             <Link 
               to="/about" 
-              className={`text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors relative group flex items-center space-x-1 ${
-                location.pathname === '/about' ? 'text-blue-600 dark:text-blue-400' : ''
+              className={`text-gray-700 dark:text-gray-300 hover:text-primary-600 transition-colors relative group flex items-center space-x-1 ${
+                location.pathname === '/about' ? 'text-primary-600 font-semibold' : ''
               }`}
             >
               <InformationCircleIcon className="h-4 w-4" />
               <span>À propos</span>
-              <span className={`absolute bottom-0 left-0 w-full h-0.5 bg-blue-600 transform scale-x-0 group-hover:scale-x-100 transition-transform ${
+              <span className={`absolute bottom-0 left-0 w-full h-0.5 bg-primary-600 transform scale-x-0 group-hover:scale-x-100 transition-transform ${
                 location.pathname === '/about' ? 'scale-x-100' : ''
               }`} />
             </Link>
 
             <Link 
               to="/contact" 
-              className={`text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors relative group flex items-center space-x-1 ${
-                location.pathname === '/contact' ? 'text-blue-600 dark:text-blue-400' : ''
+              className={`text-gray-700 dark:text-gray-300 hover:text-primary-600 transition-colors relative group flex items-center space-x-1 ${
+                location.pathname === '/contact' ? 'text-primary-600 font-semibold' : ''
               }`}
             >
               <EnvelopeIcon className="h-4 w-4" />
               <span>Contact</span>
-              <span className={`absolute bottom-0 left-0 w-full h-0.5 bg-blue-600 transform scale-x-0 group-hover:scale-x-100 transition-transform ${
+              <span className={`absolute bottom-0 left-0 w-full h-0.5 bg-primary-600 transform scale-x-0 group-hover:scale-x-100 transition-transform ${
                 location.pathname === '/contact' ? 'scale-x-100' : ''
               }`} />
             </Link>
@@ -168,12 +157,12 @@ export const Header = () => {
             {isAdmin && (
               <Link 
                 to="/dashboard" 
-                className={`text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors relative group ${
-                  location.pathname.includes('/dashboard') ? 'text-blue-600 dark:text-blue-400' : ''
+                className={`text-gray-700 dark:text-gray-300 hover:text-primary-600 transition-colors relative group ${
+                  location.pathname.includes('/dashboard') ? 'text-primary-600 font-semibold' : ''
                 }`}
               >
                 Dashboard
-                <span className={`absolute bottom-0 left-0 w-full h-0.5 bg-blue-600 transform scale-x-0 group-hover:scale-x-100 transition-transform ${
+                <span className={`absolute bottom-0 left-0 w-full h-0.5 bg-primary-600 transform scale-x-0 group-hover:scale-x-100 transition-transform ${
                   location.pathname.includes('/dashboard') ? 'scale-x-100' : ''
                 }`} />
               </Link>
@@ -182,72 +171,63 @@ export const Header = () => {
 
           {/* Right Icons */}
           <div className="flex items-center space-x-2 md:space-x-4">
-            {/* Search Button - Desktop */}
             <button
               onClick={() => setIsSearchOpen(!isSearchOpen)}
-              className="hidden md:block p-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors"
-              type="button"
-              aria-label="Rechercher"
+              className="hidden md:block p-2 text-gray-700 dark:text-gray-300 hover:text-primary-600 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors"
             >
               <MagnifyingGlassIcon className="h-5 w-5" />
             </button>
 
-            {/* Theme Toggle */}
             <button
               onClick={toggleDarkMode}
-              className="p-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors"
-              aria-label="Changer de thème"
-              type="button"
+              className="p-2 text-gray-700 dark:text-gray-300 hover:text-primary-600 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors"
             >
-              {darkMode ? (
-                <SunIcon className="h-5 w-5" />
-              ) : (
-                <MoonIcon className="h-5 w-5" />
-              )}
+              {darkMode ? <SunIcon className="h-5 w-5" /> : <MoonIcon className="h-5 w-5" />}
             </button>
 
-            {/* Favorites - Desktop */}
+            {/* Currency selector */}
+            <select
+              value={currency}
+              onChange={(e) => setCurrency(e.target.value)}
+              className="p-2 text-gray-700 dark:text-gray-300 bg-transparent border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
+            >
+              <option value="XOF">FCFA</option>
+              <option value="USD">USD ($)</option>
+            </select>
+
             <Link 
               to="/favorites" 
-              className="hidden md:block p-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors relative"
+              className="hidden md:block p-2 text-gray-700 dark:text-gray-300 hover:text-primary-600 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors relative"
             >
               <HeartIcon className="h-5 w-5" />
-              <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">
-                0
-              </span>
+              <span className="absolute -top-1 -right-1 bg-accent-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center shadow-sm">0</span>
             </Link>
 
-            {/* Cart */}
             <Link 
               to="/cart" 
-              className="p-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors relative group"
+              className="p-2 text-gray-700 dark:text-gray-300 hover:text-primary-600 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors relative group"
             >
               <ShoppingCartIcon className="h-5 w-5" />
               {cartItemsCount > 0 && (
                 <motion.span
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
-                  className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center group-hover:bg-red-600 transition-colors"
+                  className="absolute -top-1 -right-1 bg-accent-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center shadow-sm group-hover:bg-accent-600"
                 >
                   {cartItemsCount}
                 </motion.span>
               )}
             </Link>
 
-            {/* User Menu */}
             <div className="relative" ref={userMenuRef}>
               <button
                 onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                className="flex items-center space-x-1 p-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors"
-                type="button"
-                aria-label="Menu utilisateur"
-                aria-expanded={isUserMenuOpen}
+                className="flex items-center space-x-1 p-2 text-gray-700 dark:text-gray-300 hover:text-primary-600 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors"
               >
                 <UserIcon className="h-5 w-5" />
                 <ChevronDownIcon className={`h-4 w-4 transition-transform ${isUserMenuOpen ? 'rotate-180' : ''}`} />
               </button>
               
-              {/* Dropdown Menu */}
               <AnimatePresence>
                 {isUserMenuOpen && (
                   <motion.div
@@ -255,75 +235,25 @@ export const Header = () => {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
                     transition={{ duration: 0.2 }}
-                    className="absolute right-0 mt-2 w-64 bg-white dark:bg-gray-800 rounded-lg shadow-xl py-2 border dark:border-gray-700 z-50"
+                    className="absolute right-0 mt-2 w-64 bg-white dark:bg-gray-800 rounded-lg shadow-lg py-2 border dark:border-gray-700 z-50"
                   >
                     {user ? (
                       <>
-                        <div className="px-4 py-3 border-b dark:border-gray-700">
-                          <p className="text-sm text-gray-500 dark:text-gray-400">Connecté en tant que</p>
+                        <div className="px-4 py-3 border-b dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
+                          <p className="text-xs text-gray-500 dark:text-gray-400">Connecté en tant que</p>
                           <p className="font-medium text-gray-900 dark:text-white truncate">{user.email}</p>
                         </div>
-                        
-                        <Link
-                          to="/profile"
-                          className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
-                          onClick={() => setIsUserMenuOpen(false)}
-                        >
-                          Mon Profil
-                        </Link>
-                        
-                        <Link
-                          to="/orders"
-                          className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
-                          onClick={() => setIsUserMenuOpen(false)}
-                        >
-                          Mes Commandes
-                        </Link>
-                        
-                        <Link
-                          to="/favorites"
-                          className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 md:hidden"
-                          onClick={() => setIsUserMenuOpen(false)}
-                        >
-                          Mes Favoris
-                        </Link>
-                        
-                        {isAdmin && (
-                          <Link
-                            to="/dashboard"
-                            className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
-                            onClick={() => setIsUserMenuOpen(false)}
-                          >
-                            Dashboard Admin
-                          </Link>
-                        )}
-                        
+                        <Link to="/profile" className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700" onClick={() => setIsUserMenuOpen(false)}>Mon Profil</Link>
+                        <Link to="/orders" className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700" onClick={() => setIsUserMenuOpen(false)}>Mes Commandes</Link>
+                        <Link to="/favorites" className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 md:hidden" onClick={() => setIsUserMenuOpen(false)}>Mes Favoris</Link>
+                        {isAdmin && <Link to="/dashboard" className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700" onClick={() => setIsUserMenuOpen(false)}>Dashboard Admin</Link>}
                         <div className="border-t dark:border-gray-700 my-1" />
-                        
-                        <button
-                          onClick={handleSignOut}
-                          className="block w-full text-left px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20"
-                          type="button"
-                        >
-                          Déconnexion
-                        </button>
+                        <button onClick={handleSignOut} className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20">Déconnexion</button>
                       </>
                     ) : (
                       <>
-                        <Link
-                          to="/login"
-                          className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
-                          onClick={() => setIsUserMenuOpen(false)}
-                        >
-                          Connexion
-                        </Link>
-                        <Link
-                          to="/register"
-                          className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
-                          onClick={() => setIsUserMenuOpen(false)}
-                        >
-                          Inscription
-                        </Link>
+                        <Link to="/login" className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700" onClick={() => setIsUserMenuOpen(false)}>Connexion</Link>
+                        <Link to="/register" className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700" onClick={() => setIsUserMenuOpen(false)}>Inscription</Link>
                       </>
                     )}
                   </motion.div>
@@ -331,18 +261,11 @@ export const Header = () => {
               </AnimatePresence>
             </div>
 
-            {/* Mobile menu button */}
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="md:hidden p-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors"
-              aria-label={isMenuOpen ? "Fermer le menu" : "Ouvrir le menu"}
-              type="button"
+              className="md:hidden p-2 text-gray-700 dark:text-gray-300 hover:text-primary-600 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors"
             >
-              {isMenuOpen ? (
-                <XMarkIcon className="h-6 w-6" />
-              ) : (
-                <Bars3Icon className="h-6 w-6" />
-              )}
+              {isMenuOpen ? <XMarkIcon className="h-6 w-6" /> : <Bars3Icon className="h-6 w-6" />}
             </button>
           </div>
         </div>
@@ -363,15 +286,10 @@ export const Header = () => {
                   placeholder="Rechercher un produit, une catégorie..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full px-4 py-3 pl-12 pr-4 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white"
+                  className="w-full px-4 py-3 pl-12 pr-4 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-gray-800 dark:text-white"
                 />
                 <MagnifyingGlassIcon className="absolute left-4 top-3.5 h-5 w-5 text-gray-400" />
-                <button
-                  type="button"
-                  onClick={() => setIsSearchOpen(false)}
-                  className="absolute right-4 top-3.5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
-                  aria-label="Fermer la recherche"
-                >
+                <button type="button" onClick={() => setIsSearchOpen(false)} className="absolute right-4 top-3.5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
                   <XMarkIcon className="h-5 w-5" />
                 </button>
               </form>
@@ -389,88 +307,29 @@ export const Header = () => {
               className="md:hidden overflow-hidden"
             >
               <div className="py-4 space-y-4">
-                {/* Search - Mobile */}
                 <form onSubmit={handleSearch} className="relative">
                   <input
                     type="text"
                     placeholder="Rechercher..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full px-4 py-2 pl-10 pr-4 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white"
+                    className="w-full px-4 py-2 pl-10 pr-4 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-gray-800 dark:text-white"
                   />
                   <MagnifyingGlassIcon className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
                 </form>
 
-                {/* Navigation Links - Mobile */}
                 <div className="flex flex-col space-y-2">
-                  <Link
-                    to="/"
-                    className={`px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors ${
-                      location.pathname === '/' ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400' : ''
-                    }`}
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    Accueil
-                  </Link>
-                  
-                  <Link
-                    to="/products"
-                    className={`px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors ${
-                      location.pathname.includes('/products') ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400' : ''
-                    }`}
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    Produits
-                  </Link>
-
-                  <Link
-                    to="/about"
-                    className={`px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors ${
-                      location.pathname === '/about' ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400' : ''
-                    }`}
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    À propos
-                  </Link>
-
-                  <Link
-                    to="/contact"
-                    className={`px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors ${
-                      location.pathname === '/contact' ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400' : ''
-                    }`}
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    Contact
-                  </Link>
-                  
+                  <Link to="/" className={`px-4 py-2 rounded-lg transition-colors ${location.pathname === '/' ? 'bg-primary-600 text-white' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'}`} onClick={() => setIsMenuOpen(false)}>Accueil</Link>
+                  <Link to="/products" className={`px-4 py-2 rounded-lg transition-colors ${location.pathname.includes('/products') ? 'bg-primary-600 text-white' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'}`} onClick={() => setIsMenuOpen(false)}>Produits</Link>
+                  <Link to="/about" className={`px-4 py-2 rounded-lg transition-colors ${location.pathname === '/about' ? 'bg-primary-600 text-white' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'}`} onClick={() => setIsMenuOpen(false)}>À propos</Link>
+                  <Link to="/contact" className={`px-4 py-2 rounded-lg transition-colors ${location.pathname === '/contact' ? 'bg-primary-600 text-white' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'}`} onClick={() => setIsMenuOpen(false)}>Contact</Link>
                   {isAdmin && (
-                    <Link
-                      to="/dashboard"
-                      className={`px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors ${
-                        location.pathname.includes('/dashboard') ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400' : ''
-                      }`}
-                      onClick={() => setIsMenuOpen(false)}
-                    >
-                      Dashboard
-                    </Link>
+                    <Link to="/dashboard" className={`px-4 py-2 rounded-lg transition-colors ${location.pathname.includes('/dashboard') ? 'bg-primary-600 text-white' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'}`} onClick={() => setIsMenuOpen(false)}>Dashboard</Link>
                   )}
-                  
                   {!user && (
                     <>
-                      <Link
-                        to="/login"
-                        className="px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
-                        onClick={() => setIsMenuOpen(false)}
-                      >
-                        Connexion
-                      </Link>
-                      <Link
-                        to="/register"
-                        className="px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
-                        onClick={() => setIsMenuOpen(false)}
-                      >
-                        Inscription
-                      </Link>
+                      <Link to="/login" className="px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg" onClick={() => setIsMenuOpen(false)}>Connexion</Link>
+                      <Link to="/register" className="px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg" onClick={() => setIsMenuOpen(false)}>Inscription</Link>
                     </>
                   )}
                 </div>

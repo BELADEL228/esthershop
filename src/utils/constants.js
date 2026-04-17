@@ -1,14 +1,15 @@
-export const APP_NAME = 'E-Shop'
+// src/utils/constants.js
+
+export const APP_NAME = 'Jenny Shop'
 
 export const CATEGORIES = [
-  { value: 'electronique', label: 'Électronique' },
+  { value: 'chaussures', label: 'Chaussures' },
+  { value: 'maillots', label: 'Maillots' },
+  { value: 'ballons', label: 'Ballons' },
+  { value: 'accessoires', label: 'Accessoires' },
   { value: 'vetements', label: 'Vêtements' },
-  { value: 'maison', label: 'Maison' },
-  { value: 'livres', label: 'Livres' },
-  { value: 'sport', label: 'Sport' },
   { value: 'beaute', label: 'Beauté' },
-  { value: 'jouets', label: 'Jouets' },
-  { value: 'alimentation', label: 'Alimentation' }
+  { value: 'sport', label: 'Sport' }
 ]
 
 export const ORDER_STATUS = {
@@ -20,9 +21,9 @@ export const ORDER_STATUS = {
 }
 
 export const PAYMENT_METHODS = {
-  card: 'Carte bancaire',
-  paypal: 'PayPal',
-  bank_transfer: 'Virement bancaire'
+  cash_on_delivery: 'Paiement à la livraison',
+  mobile_money: 'Mobile Money',
+  card: 'Carte bancaire'
 }
 
 export const SORT_OPTIONS = [

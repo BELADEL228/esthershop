@@ -40,7 +40,7 @@ export const Returns = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-4xl font-bold text-center mb-4">
+      <h1 className="text-4xl font-bold text-center text-gray-900 dark:text-white mb-4">
         Retours et remboursements
       </h1>
       <p className="text-xl text-gray-600 dark:text-gray-400 text-center mb-12">
@@ -48,29 +48,29 @@ export const Returns = () => {
       </p>
 
       {/* Délai de rétractation */}
-      <div className="bg-blue-600 text-white rounded-lg p-8 text-center mb-12">
+      <div className="bg-primary-600 text-white rounded-lg p-8 text-center mb-12">
         <h2 className="text-3xl font-bold mb-2">14 jours</h2>
         <p className="text-xl mb-4">pour changer d'avis</p>
-        <p className="text-blue-100">
+        <p className="text-primary-100">
           Conformément à la loi, vous disposez de 14 jours à compter de la réception 
           de votre commande pour nous retourner les articles qui ne vous conviendraient pas.
         </p>
       </div>
 
       {/* Étapes */}
-      <h2 className="text-2xl font-semibold text-center mb-8">
+      <h2 className="text-2xl font-semibold text-center text-gray-900 dark:text-white mb-8">
         Comment retourner un article ?
       </h2>
       <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
         {steps.map((step, index) => (
           <div
             key={index}
-            className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 text-center"
+            className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 text-center border border-gray-200 dark:border-gray-700"
           >
-            <div className="bg-blue-100 dark:bg-blue-900/20 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-              <step.icon className="h-8 w-8 text-blue-600 dark:text-blue-400" />
+            <div className="bg-primary-100 dark:bg-primary-900/20 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+              <step.icon className="h-8 w-8 text-primary-600 dark:text-primary-400" />
             </div>
-            <h3 className="text-lg font-semibold mb-2">{step.title}</h3>
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">{step.title}</h3>
             <p className="text-gray-600 dark:text-gray-400 text-sm">
               {step.description}
             </p>
@@ -80,7 +80,7 @@ export const Returns = () => {
 
       <div className="grid md:grid-cols-2 gap-8">
         {/* Exceptions */}
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 border border-gray-200 dark:border-gray-700">
           <h2 className="text-xl font-semibold mb-4 text-red-600 dark:text-red-400">
             Articles non retournables
           </h2>
@@ -95,7 +95,7 @@ export const Returns = () => {
         </div>
 
         {/* Conditions */}
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 border border-gray-200 dark:border-gray-700">
           <h2 className="text-xl font-semibold mb-4 text-green-600 dark:text-green-400">
             Conditions de retour
           </h2>
@@ -126,7 +126,7 @@ export const Returns = () => {
       <div className="text-center mt-12">
         <a
           href="/orders"
-          className="inline-block bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 transition-colors"
+          className="inline-block bg-primary-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-primary-700 transition-colors"
         >
           Faire une demande de retour
         </a>

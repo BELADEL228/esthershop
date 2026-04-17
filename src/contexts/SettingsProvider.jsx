@@ -10,10 +10,10 @@ export const SettingsProvider = ({ children }) => {
     try {
       const data = await settingsApi.get()
       setSettings(data || {
-        site_name: 'Esther Shop',
-        site_email: 'esthernabede08@gmail.com',
-        site_phone: '+228 90 00 00 00',
-        site_address: 'Lomé, Togo',
+        site_name: 'Jenny Shop',
+        site_email: 'Lbilendo5@gmail.com',
+        site_phone: '+1 (701) 946-6319',
+        site_address: 'W664+76C Dickinson, North Dakota, USA',
         shipping_cost: 2000,
         free_shipping_threshold: 25000,
         tax_rate: 18

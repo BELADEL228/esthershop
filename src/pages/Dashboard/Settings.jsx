@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useAuth } from '../../hooks/useAuth'
-import { useSettings } from '../../hooks/useSettings'  // ← AJOUTÉ
+import { useSettings } from '../../hooks/useSettings'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -21,13 +21,13 @@ export const Settings = () => {
   const [loading, setLoading] = useState(false)
   const [initialLoading, setInitialLoading] = useState(true)
   const { user } = useAuth()
-  const { refreshSettings } = useSettings()  // ← Pour rafraîchir le contexte
+  const { refreshSettings } = useSettings()
 
   const { register, handleSubmit, reset, formState: { errors } } = useForm({
     resolver: zodResolver(settingsSchema),
     defaultValues: {
-      siteName: 'Esther Shop',
-      siteEmail: 'esthernabede08@gmail.com',
+      siteName: 'Jenny Shop',
+      siteEmail: 'Jennynabede08@gmail.com',
       sitePhone: '+228 90 00 00 00',
       siteAddress: 'Lomé, Togo',
       shippingCost: 2000,
@@ -36,7 +36,6 @@ export const Settings = () => {
     }
   })
 
-  // Charger les paramètres au montage
   useEffect(() => {
     loadSettings()
   }, [])
@@ -59,8 +58,8 @@ export const Settings = () => {
       if (data) {
         console.log('📦 Paramètres chargés:', data)
         reset({
-          siteName: data.site_name || 'Esther Shop',
-          siteEmail: data.site_email || 'esthernabede08@gmail.com',
+          siteName: data.site_name || 'Jenny Shop',
+          siteEmail: data.site_email || 'Jennynabede08@gmail.com',
           sitePhone: data.site_phone || '+228 90 00 00 00',
           siteAddress: data.site_address || 'Lomé, Togo',
           shippingCost: data.shipping_cost || 2000,
@@ -81,28 +80,17 @@ export const Settings = () => {
     try {
       console.log('📦 Données à sauvegarder:', data)
 
-      // 1. Vérifier que l'utilisateur est connecté
-      if (!user?.id) {
-        throw new Error('Vous devez être connecté')
-      }
+      if (!user?.id) throw new Error('Vous devez être connecté')
 
-      // 2. Vérifier si l'utilisateur est admin
       const { data: userRole, error: roleError } = await supabase
         .from('user_roles')
         .select('role')
         .eq('user_id', user.id)
         .maybeSingle()
 
-      if (roleError) {
-        console.error('❌ Erreur vérification rôle:', roleError)
-        throw new Error('Erreur de vérification des droits')
-      }
+      if (roleError) throw new Error('Erreur de vérification des droits')
+      if (userRole?.role !== 'admin') throw new Error('Vous devez être administrateur pour modifier les paramètres')
 
-      if (userRole?.role !== 'admin') {
-        throw new Error('Vous devez être administrateur pour modifier les paramètres')
-      }
-
-      // 3. Préparer les données avec les bons types
       const settingsData = {
         site_name: String(data.siteName),
         site_email: String(data.siteEmail),
@@ -115,9 +103,6 @@ export const Settings = () => {
         updated_at: new Date().toISOString()
       }
 
-      console.log('📤 Mise à jour Supabase:', settingsData)
-
-      // 4. Mettre à jour la base de données
       const { data: result, error } = await supabase
         .from('settings')
         .update(settingsData)
@@ -125,18 +110,11 @@ export const Settings = () => {
         .select()
         .single()
 
-      if (error) {
-        console.error('❌ Erreur Supabase:', error)
-        throw new Error(`Erreur base de données: ${error.message}`)
-      }
+      if (error) throw new Error(`Erreur base de données: ${error.message}`)
 
-      console.log('✅ Résultat:', result)
-      
-      // 5. Rafraîchir le contexte pour que tout le site se mette à jour
       await refreshSettings()
-      
       toast.success('Paramètres mis à jour avec succès')
-      await loadSettings() // Recharger le formulaire
+      await loadSettings()
       
     } catch (error) {
       console.error('❌ Erreur sauvegarde:', error)
@@ -149,127 +127,113 @@ export const Settings = () => {
   if (initialLoading) {
     return (
       <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
       </div>
     )
   }
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-8">Paramètres de la boutique</h1>
+      <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-8">Paramètres de la boutique</h1>
 
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 border border-gray-200 dark:border-gray-700">
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           {/* Section Informations générales */}
           <div>
-            <h2 className="text-xl font-semibold mb-4 text-blue-600 dark:text-blue-400">
+            <h2 className="text-xl font-semibold mb-4 text-primary-600 dark:text-primary-400">
               Informations générales
             </h2>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium mb-1">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   Nom du site
                 </label>
                 <input
                   {...register('siteName')}
-                  className="w-full px-3 py-2 border rounded-md dark:bg-gray-700 dark:border-gray-600"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:text-white"
                 />
-                {errors.siteName && (
-                  <p className="text-red-500 text-sm mt-1">{errors.siteName.message}</p>
-                )}
+                {errors.siteName && <p className="text-red-500 text-sm mt-1">{errors.siteName.message}</p>}
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-1">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   Email de contact
                 </label>
                 <input
                   {...register('siteEmail')}
                   type="email"
-                  className="w-full px-3 py-2 border rounded-md dark:bg-gray-700 dark:border-gray-600"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:text-white"
                 />
-                {errors.siteEmail && (
-                  <p className="text-red-500 text-sm mt-1">{errors.siteEmail.message}</p>
-                )}
+                {errors.siteEmail && <p className="text-red-500 text-sm mt-1">{errors.siteEmail.message}</p>}
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-1">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   Téléphone
                 </label>
                 <input
                   {...register('sitePhone')}
-                  className="w-full px-3 py-2 border rounded-md dark:bg-gray-700 dark:border-gray-600"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:text-white"
                 />
-                {errors.sitePhone && (
-                  <p className="text-red-500 text-sm mt-1">{errors.sitePhone.message}</p>
-                )}
+                {errors.sitePhone && <p className="text-red-500 text-sm mt-1">{errors.sitePhone.message}</p>}
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-1">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   Adresse
                 </label>
                 <input
                   {...register('siteAddress')}
-                  className="w-full px-3 py-2 border rounded-md dark:bg-gray-700 dark:border-gray-600"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:text-white"
                 />
-                {errors.siteAddress && (
-                  <p className="text-red-500 text-sm mt-1">{errors.siteAddress.message}</p>
-                )}
+                {errors.siteAddress && <p className="text-red-500 text-sm mt-1">{errors.siteAddress.message}</p>}
               </div>
             </div>
           </div>
 
           {/* Section Livraison et Taxes */}
           <div>
-            <h2 className="text-xl font-semibold mb-4 text-blue-600 dark:text-blue-400">
+            <h2 className="text-xl font-semibold mb-4 text-primary-600 dark:text-primary-400">
               Paramètres de livraison et taxes
             </h2>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium mb-1">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   Frais de livraison (FCFA)
                 </label>
                 <input
                   {...register('shippingCost', { valueAsNumber: true })}
                   type="number"
-                  className="w-full px-3 py-2 border rounded-md dark:bg-gray-700 dark:border-gray-600"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:text-white"
                 />
-                {errors.shippingCost && (
-                  <p className="text-red-500 text-sm mt-1">{errors.shippingCost.message}</p>
-                )}
+                {errors.shippingCost && <p className="text-red-500 text-sm mt-1">{errors.shippingCost.message}</p>}
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-1">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   Livraison gratuite à partir de (FCFA)
                 </label>
                 <input
                   {...register('freeShippingThreshold', { valueAsNumber: true })}
                   type="number"
-                  className="w-full px-3 py-2 border rounded-md dark:bg-gray-700 dark:border-gray-600"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:text-white"
                 />
-                {errors.freeShippingThreshold && (
-                  <p className="text-red-500 text-sm mt-1">{errors.freeShippingThreshold.message}</p>
-                )}
+                {errors.freeShippingThreshold && <p className="text-red-500 text-sm mt-1">{errors.freeShippingThreshold.message}</p>}
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-1">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   Taux de TVA (%)
                 </label>
                 <input
                   {...register('taxRate', { valueAsNumber: true })}
                   type="number"
                   step="0.1"
-                  className="w-full px-3 py-2 border rounded-md dark:bg-gray-700 dark:border-gray-600"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:text-white"
                 />
-                {errors.taxRate && (
-                  <p className="text-red-500 text-sm mt-1">{errors.taxRate.message}</p>
-                )}
+                {errors.taxRate && <p className="text-red-500 text-sm mt-1">{errors.taxRate.message}</p>}
               </div>
             </div>
           </div>
@@ -279,7 +243,7 @@ export const Settings = () => {
             <button
               type="submit"
               disabled={loading}
-              className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 disabled:bg-blue-300 transition-colors"
+              className="bg-primary-600 text-white px-6 py-2 rounded-lg hover:bg-primary-700 disabled:bg-primary-300 transition-colors"
             >
               {loading ? 'Sauvegarde...' : 'Sauvegarder les modifications'}
             </button>

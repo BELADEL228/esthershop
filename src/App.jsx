@@ -5,7 +5,8 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { AuthProvider } from './contexts/AuthProvider'
 import { CartProvider } from './contexts/CartProvider'
 import { ThemeProvider } from './contexts/ThemeProvider'
-import { SettingsProvider } from './contexts/SettingsProvider'  // ← AJOUTÉ
+import { SettingsProvider } from './contexts/SettingsProvider'
+import { CurrencyProvider } from './contexts/CurrencyContext'  // ← AJOUTÉ
 import { Header } from './components/common/Header'
 import { Footer } from './components/common/Footer'
 import { ProtectedRoute } from './components/common/ProtectedRoute'
@@ -42,7 +43,7 @@ import { Checkout } from './pages/Checkout'
 // Pages dashboard (admin)
 import { DashboardLayout } from './pages/Dashboard/DashboardLayout'
 import { DashboardHome } from './pages/Dashboard/DashboardHome'
-import { NewsletterManagement } from './pages/Dashboard/newsletterManagement'  // ← Corrigé (majuscule)
+import { NewsletterManagement } from './pages/Dashboard/newsletterManagement'
 import { ProductsManagement } from './pages/Dashboard/ProductsManagement'
 import { MessagesManagement } from './pages/Dashboard/MessagesManagement'
 import { OrdersManagement } from './pages/Dashboard/OrdersManagement'
@@ -64,109 +65,111 @@ function App() {
           <AuthProvider>
             <CartProvider>
               <ThemeProvider>
-                <SettingsProvider>  {/* ← AJOUTÉ ICI */}
-                  <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col">
-                    <Toaster 
-                      position="top-right"
-                      toastOptions={{
-                        duration: 3000,
-                        style: {
-                          background: '#363636',
-                          color: '#fff',
-                        },
-                        success: {
+                <SettingsProvider>
+                  <CurrencyProvider>   {/* ← AJOUTÉ ICI */}
+                    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col">
+                      <Toaster 
+                        position="top-right"
+                        toastOptions={{
                           duration: 3000,
-                          iconTheme: {
-                            primary: '#10b981',
-                            secondary: '#fff',
+                          style: {
+                            background: '#363636',
+                            color: '#fff',
                           },
-                        },
-                        error: {
-                          duration: 4000,
-                          iconTheme: {
-                            primary: '#ef4444',
-                            secondary: '#fff',
+                          success: {
+                            duration: 3000,
+                            iconTheme: {
+                              primary: '#10b981',
+                              secondary: '#fff',
+                            },
                           },
-                        },
-                      }}
-                    />
-                    
-                    <Header />
-                    
-                    <main className="flex-grow">
-                      <Routes>
-                        {/* ===== ROUTES PUBLIQUES ===== */}
-                        <Route path="/" element={<Home />} />
-                        <Route path="/products" element={<Products />} />
-                        <Route path="/products/:id" element={<ProductDetail />} />
-                        <Route path="/cart" element={<Cart />} />
-                        
-                        {/* ===== ROUTES D'AUTHENTIFICATION ===== */}
-                        <Route path="/login" element={<Login />} />
-                        <Route path="/register" element={<Register />} />
-                        
-                        {/* ===== ROUTES INFORMATIVES ===== */}
-                        <Route path="/about" element={<About />} />
-                        <Route path="/contact" element={<Contact />} />
-                        <Route path="/faq" element={<FAQ />} />
-                        <Route path="/shipping" element={<Shipping />} />
-                        <Route path="/returns" element={<Returns />} />
-                        <Route path="/terms" element={<Terms />} />
-                        <Route path="/privacy" element={<Privacy />} />
-                        <Route path="/unauthorized" element={<Unauthorized />} />
-                        
-                        {/* ===== ROUTES PROTÉGÉES (UTILISATEUR CONNECTÉ) ===== */}
-                        <Route path="/profile" element={
-                          <ProtectedRoute>
-                            <Profile />
-                          </ProtectedRoute>
-                        } />
-                        
-                        <Route path="/orders" element={
-                          <ProtectedRoute>
-                            <Orders />
-                          </ProtectedRoute>
-                        } />
-                        <Route path="/orders/success/:id" element={
-                          <ProtectedRoute>
-                            <OrderSuccess />
-                          </ProtectedRoute>
-                        } />
-                        <Route path="/favorites" element={
-                          <ProtectedRoute>
-                            <Favorites />
-                          </ProtectedRoute>
-                        } />
-                        
-                        <Route path="/checkout" element={
-                          <ProtectedRoute>
-                            <Checkout />
-                          </ProtectedRoute>
-                        } />
-                        
-                        {/* ===== ROUTES ADMIN ===== */}
-                        <Route path="/dashboard" element={
-                          <AdminRoute>
-                            <DashboardLayout />
-                          </AdminRoute>
-                        }>
-                          <Route index element={<DashboardHome />} />
-                          <Route path="products" element={<ProductsManagement />} />
-                          <Route path="orders" element={<OrdersManagement />} />
-                          <Route path="users" element={<UsersManagement />} />
-                          <Route path="newsletter" element={<NewsletterManagement />} />
-                          <Route path="messages" element={<MessagesManagement />} />
-                          <Route path="settings" element={<Settings />} />
-                        </Route>
-                        
-                        {/* ===== REDIRECTION 404 ===== */}
-                        <Route path="*" element={<Navigate to="/" replace />} />
-                      </Routes>
-                    </main>
-                    
-                    <Footer />
-                  </div>
-                </SettingsProvider>  {/* ← FERMETURE */}
+                          error: {
+                            duration: 4000,
+                            iconTheme: {
+                              primary: '#ef4444',
+                              secondary: '#fff',
+                            },
+                          },
+                        }}
+                      />
+                      
+                      <Header />
+                      
+                      <main className="flex-grow">
+                        <Routes>
+                          {/* ===== ROUTES PUBLIQUES ===== */}
+                          <Route path="/" element={<Home />} />
+                          <Route path="/products" element={<Products />} />
+                          <Route path="/products/:id" element={<ProductDetail />} />
+                          <Route path="/cart" element={<Cart />} />
+                          
+                          {/* ===== ROUTES D'AUTHENTIFICATION ===== */}
+                          <Route path="/login" element={<Login />} />
+                          <Route path="/register" element={<Register />} />
+                          
+                          {/* ===== ROUTES INFORMATIVES ===== */}
+                          <Route path="/about" element={<About />} />
+                          <Route path="/contact" element={<Contact />} />
+                          <Route path="/faq" element={<FAQ />} />
+                          <Route path="/shipping" element={<Shipping />} />
+                          <Route path="/returns" element={<Returns />} />
+                          <Route path="/terms" element={<Terms />} />
+                          <Route path="/privacy" element={<Privacy />} />
+                          <Route path="/unauthorized" element={<Unauthorized />} />
+                          
+                          {/* ===== ROUTES PROTÉGÉES (UTILISATEUR CONNECTÉ) ===== */}
+                          <Route path="/profile" element={
+                            <ProtectedRoute>
+                              <Profile />
+                            </ProtectedRoute>
+                          } />
+                          
+                          <Route path="/orders" element={
+                            <ProtectedRoute>
+                              <Orders />
+                            </ProtectedRoute>
+                          } />
+                          <Route path="/orders/success/:id" element={
+                            <ProtectedRoute>
+                              <OrderSuccess />
+                            </ProtectedRoute>
+                          } />
+                          <Route path="/favorites" element={
+                            <ProtectedRoute>
+                              <Favorites />
+                            </ProtectedRoute>
+                          } />
+                          
+                          <Route path="/checkout" element={
+                            <ProtectedRoute>
+                              <Checkout />
+                            </ProtectedRoute>
+                          } />
+                          
+                          {/* ===== ROUTES ADMIN ===== */}
+                          <Route path="/dashboard" element={
+                            <AdminRoute>
+                              <DashboardLayout />
+                            </AdminRoute>
+                          }>
+                            <Route index element={<DashboardHome />} />
+                            <Route path="products" element={<ProductsManagement />} />
+                            <Route path="orders" element={<OrdersManagement />} />
+                            <Route path="users" element={<UsersManagement />} />
+                            <Route path="newsletter" element={<NewsletterManagement />} />
+                            <Route path="messages" element={<MessagesManagement />} />
+                            <Route path="settings" element={<Settings />} />
+                          </Route>
+                          
+                          {/* ===== REDIRECTION 404 ===== */}
+                          <Route path="*" element={<Navigate to="/" replace />} />
+                        </Routes>
+                      </main>
+                      
+                      <Footer />
+                    </div>
+                  </CurrencyProvider>
+                </SettingsProvider>
               </ThemeProvider>
             </CartProvider>
           </AuthProvider>

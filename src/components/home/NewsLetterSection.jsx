@@ -20,7 +20,6 @@ export const NewsletterSection = ({ source = 'footer' }) => {
         toast.success(result.message)
         setEmail('')
         
-        // Réinitialiser après 3 secondes
         setTimeout(() => setSubscribed(false), 3000)
       } else {
         toast.error(result.message)
@@ -49,13 +48,13 @@ export const NewsletterSection = ({ source = 'footer' }) => {
   }
 
   return (
-    <section className="bg-blue-600 py-16">
+    <section className="bg-primary-600 py-16">
       <div className="container mx-auto px-4 text-center">
         <EnvelopeIcon className="h-12 w-12 text-white mx-auto mb-4" />
         <h2 className="text-3xl font-bold text-white mb-4">
           Restez informé
         </h2>
-        <p className="text-blue-100 mb-8 max-w-2xl mx-auto">
+        <p className="text-primary-100 mb-8 max-w-2xl mx-auto">
           Inscrivez-vous à notre newsletter pour recevoir nos offres spéciales 
           et les dernières nouveautés directement dans votre boîte mail.
         </p>
@@ -67,19 +66,19 @@ export const NewsletterSection = ({ source = 'footer' }) => {
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Votre adresse email"
             required
-            className="flex-1 px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-white"
+            className="flex-1 px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-white bg-white text-gray-900"
             disabled={loading}
           />
           <button
             type="submit"
             disabled={loading}
-            className="bg-white text-blue-600 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
+            className="bg-white text-primary-600 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
           >
             {loading ? 'Inscription...' : "S'inscrire"}
           </button>
         </form>
         
-        <p className="text-blue-200 text-sm mt-4">
+        <p className="text-primary-200 text-sm mt-4">
           📧 Vos données sont confidentielles. Désinscription possible à tout moment.
         </p>
       </div>
